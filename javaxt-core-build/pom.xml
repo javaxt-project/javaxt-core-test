@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>javaxt</groupId>
+    <artifactId>javaxt-core-test</artifactId>
+    <version>dev</version>
+  </parent>
+  <groupId>javaxt.core.build</groupId>
+  <artifactId>javaxt-core-build</artifactId>
+  <version>dev</version>
+  <name>javaxt-core-build</name>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+    <profiles>
+    <profile>
+      <id>github-sources</id>
+      <activation>
+        <property>
+          <name>!javaxt.core.local.dir</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-scm-plugin</artifactId>
+            <version>1.11.3</version>
+            <configuration>
+              <connectionType>scm:git</connectionType>
+              <connectionUrl>scm:git:https://github.com/javaxt-project/javaxt-core.git</connectionUrl>
+              <developerConnectionUrl>scm:git:https://github.com/javaxt-project/javaxt-core.git</developerConnectionUrl>
+              <checkoutDirectory>${project.build.directory}/javaxt-core-src</checkoutDirectory>
+              <branch>${javaxt.core.branch:main}</branch>
+            </configuration>
+            <executions>
+              <execution>
+                <id>checkout-javaxt-core</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>checkout</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <id>copy-sources</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <echo message="Copying sources from git checkout to main/java"/>
+                    <copy todir="${project.basedir}/src/main/java" overwrite="true">
+                      <fileset dir="${project.build.directory}/javaxt-core-src/src"/>
+                    </copy>
+                    <echo message="Copy completed"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>local-sources</id>
+      <activation>
+        <property>
+          <name>javaxt.core.local.dir</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <id>copy-local-sources</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <echo message="Copying from local directory: '${javaxt.core.local.dir}'"/>
+                    <copy todir="${project.basedir}/src/main/java" overwrite="true">
+                      <fileset dir="${javaxt.core.local.dir}" includes="**/*"/>
+                    </copy>
+                    <echo message="Local copy completed successfully"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>debug-property</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <echo message="DEBUG: javaxt.core.local.dir = '${javaxt.core.local.dir}'"/>
+                <echo message="DEBUG: Property length = ${javaxt.core.local.dir.length()}"/>
+                <echo message="DEBUG: Property is empty = ${javaxt.core.local.dir:EMPTY}"/>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>clean-copied-sources</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <delete dir="${project.basedir}/src/main/java" failonerror="false"/>
+                <delete dir="${project.build.directory}/javaxt-core-src" failonerror="false"/>
+                <delete dir="${project.basedir}/dist" failonerror="false"/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

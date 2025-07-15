@@ -1,0 +1,3388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ssd>
+ <service name="XigniteCurrencies" url="https://www.xignite.com/xCurrencies.asmx" namespace="http://www.xignite.com/services/">
+  <description>Provide real-time currency foreign exchange information and calculations.</description>
+  <methods>
+  <method name="ListCurrencies" soapAction="http://www.xignite.com/services/ListCurrencies" resultsNode="ListCurrenciesResult">
+  <description>List supported currencies.</description>
+  <parameters>
+  </parameters>
+  <outputs>
+   <output name="ListCurrenciesResult" type="CurrencyList" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CurrencyList" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="ListActiveCurrencies" soapAction="http://www.xignite.com/services/ListActiveCurrencies" resultsNode="ListActiveCurrenciesResult">
+  <description>List supported currencies.</description>
+  <parameters>
+  </parameters>
+  <outputs>
+   <output name="ListActiveCurrenciesResult" type="CurrencyList" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CurrencyList" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="ListOfficialRates" soapAction="http://www.xignite.com/services/ListOfficialRates" resultsNode="ListOfficialRatesResult">
+  <description>List supported official rates.</description>
+  <parameters>
+  </parameters>
+  <outputs>
+   <output name="ListOfficialRatesResult" type="OfficialRates" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="OfficialRates" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetUnitOfAccount" soapAction="http://www.xignite.com/services/GetUnitOfAccount" resultsNode="GetUnitOfAccountResult">
+  <description>Get Unit Of Account.</description>
+  <parameters>
+   <parameter name="Currency" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetUnitOfAccountResult" type="UnitOfAccount" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="UnitOfAccount" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="ConvertRealTimeValue" soapAction="http://www.xignite.com/services/ConvertRealTimeValue" resultsNode="ConvertRealTimeValueResult">
+  <description>Convert value from one currency to another in real-time.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="To" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Amount" type="double" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="ConvertRealTimeValueResult" type="ExchangeConversion" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ExchangeConversion" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="ConvertHistoricalValue" soapAction="http://www.xignite.com/services/ConvertHistoricalValue" resultsNode="ConvertHistoricalValueResult">
+  <description>Convert value from one currency to another as of a historical date.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="To" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Amount" type="double" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="ConvertHistoricalValueResult" type="ExchangeConversion" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ExchangeConversion" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRealTimeForwardRate" soapAction="http://www.xignite.com/services/GetRealTimeForwardRate" resultsNode="GetRealTimeForwardRateResult">
+  <description>Returns a set of real-time currency forward rates.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="To" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRealTimeForwardRateResult" type="ForwardRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ForwardRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRealTimeCrossRateAsString" soapAction="http://www.xignite.com/services/GetRealTimeCrossRateAsString" resultsNode="GetRealTimeCrossRateAsStringResult">
+  <description>Returns a real-time currency cross-rate.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="To" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRealTimeCrossRateAsStringResult" type="CrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetLatestCrossRate" soapAction="http://www.xignite.com/services/GetLatestCrossRate" resultsNode="GetLatestCrossRateResult">
+  <description>Returns the latest possible cross rate.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="To" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetLatestCrossRateResult" type="CrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetLatestCrossRates" soapAction="http://www.xignite.com/services/GetLatestCrossRates" resultsNode="GetLatestCrossRatesResult">
+  <description>Returns the latest possible cross rate.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Tos" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetLatestCrossRatesResult" type="ArrayOfCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRate" type="CrossRate" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="CrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRealTimeCrossRate" soapAction="http://www.xignite.com/services/GetRealTimeCrossRate" resultsNode="GetRealTimeCrossRateResult">
+  <description>Returns a real-time currency cross-rate.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="USD">USD</option>
+      <option value="AED">AED</option>
+      <option value="AFA">AFA</option>
+      <option value="AFN">AFN</option>
+      <option value="ALL">ALL</option>
+      <option value="AMD">AMD</option>
+      <option value="ANG">ANG</option>
+      <option value="AOA">AOA</option>
+      <option value="ARA">ARA</option>
+      <option value="ARE">ARE</option>
+      <option value="ARS">ARS</option>
+      <option value="ATS">ATS</option>
+      <option value="AUD">AUD</option>
+      <option value="AUN">AUN</option>
+      <option value="AWG">AWG</option>
+      <option value="AZM">AZM</option>
+      <option value="AZN">AZN</option>
+      <option value="BAM">BAM</option>
+      <option value="BBD">BBD</option>
+      <option value="BDT">BDT</option>
+      <option value="BEF">BEF</option>
+      <option value="BEL">BEL</option>
+      <option value="BGL">BGL</option>
+      <option value="BGN">BGN</option>
+      <option value="BHD">BHD</option>
+      <option value="BIF">BIF</option>
+      <option value="BMD">BMD</option>
+      <option value="BND">BND</option>
+      <option value="BOB">BOB</option>
+      <option value="BOV">BOV</option>
+      <option value="BRC">BRC</option>
+      <option value="BRE">BRE</option>
+      <option value="BRI">BRI</option>
+      <option value="BRL">BRL</option>
+      <option value="BRR">BRR</option>
+      <option value="BSD">BSD</option>
+      <option value="BTN">BTN</option>
+      <option value="BWP">BWP</option>
+      <option value="BYN">BYN</option>
+      <option value="BYR">BYR</option>
+      <option value="BZD">BZD</option>
+      <option value="CAD">CAD</option>
+      <option value="CDF">CDF</option>
+      <option value="CHF">CHF</option>
+      <option value="CLF">CLF</option>
+      <option value="CHK">CHK</option>
+      <option value="CLP">CLP</option>
+      <option value="CNY">CNY</option>
+      <option value="CNH">CNH</option>
+      <option value="COP">COP</option>
+      <option value="CRC">CRC</option>
+      <option value="CSD">CSD</option>
+      <option value="CUP">CUP</option>
+      <option value="CVE">CVE</option>
+      <option value="CYP">CYP</option>
+      <option value="CZK">CZK</option>
+      <option value="DEM">DEM</option>
+      <option value="DJF">DJF</option>
+      <option value="DKK">DKK</option>
+      <option value="DOP">DOP</option>
+      <option value="DOE">DOE</option>
+      <option value="DOW">DOW</option>
+      <option value="DZD">DZD</option>
+      <option value="ECS">ECS</option>
+      <option value="EEK">EEK</option>
+      <option value="EGP">EGP</option>
+      <option value="ERN">ERN</option>
+      <option value="ESP">ESP</option>
+      <option value="ETB">ETB</option>
+      <option value="EUR">EUR</option>
+      <option value="FIM">FIM</option>
+      <option value="FJD">FJD</option>
+      <option value="FKP">FKP</option>
+      <option value="FRF">FRF</option>
+      <option value="FRN">FRN</option>
+      <option value="GBP">GBP</option>
+      <option value="GEL">GEL</option>
+      <option value="GGP">GGP</option>
+      <option value="GHC">GHC</option>
+      <option value="GHS">GHS</option>
+      <option value="GIP">GIP</option>
+      <option value="GMD">GMD</option>
+      <option value="GNF">GNF</option>
+      <option value="GRD">GRD</option>
+      <option value="GTQ">GTQ</option>
+      <option value="GYD">GYD</option>
+      <option value="HKD">HKD</option>
+      <option value="HNL">HNL</option>
+      <option value="HRD">HRD</option>
+      <option value="HRK">HRK</option>
+      <option value="HTG">HTG</option>
+      <option value="HUF">HUF</option>
+      <option value="IDR">IDR</option>
+      <option value="IEP">IEP</option>
+      <option value="ILS">ILS</option>
+      <option value="IMP">IMP</option>
+      <option value="INR">INR</option>
+      <option value="IQD">IQD</option>
+      <option value="IRR">IRR</option>
+      <option value="ISK">ISK</option>
+      <option value="ITL">ITL</option>
+      <option value="JEP">JEP</option>
+      <option value="JMD">JMD</option>
+      <option value="JOD">JOD</option>
+      <option value="JPY">JPY</option>
+      <option value="KES">KES</option>
+      <option value="KGS">KGS</option>
+      <option value="KHR">KHR</option>
+      <option value="KMF">KMF</option>
+      <option value="KPW">KPW</option>
+      <option value="KRU">KRU</option>
+      <option value="KRW">KRW</option>
+      <option value="KWD">KWD</option>
+      <option value="KYD">KYD</option>
+      <option value="KZT">KZT</option>
+      <option value="LAK">LAK</option>
+      <option value="LBP">LBP</option>
+      <option value="LKR">LKR</option>
+      <option value="LRD">LRD</option>
+      <option value="LSL">LSL</option>
+      <option value="LTL">LTL</option>
+      <option value="LUF">LUF</option>
+      <option value="LVL">LVL</option>
+      <option value="LYD">LYD</option>
+      <option value="M5P">M5P</option>
+      <option value="MAD">MAD</option>
+      <option value="MAL">MAL</option>
+      <option value="MDL">MDL</option>
+      <option value="MFG">MFG</option>
+      <option value="MGA">MGA</option>
+      <option value="MKD">MKD</option>
+      <option value="MMK">MMK</option>
+      <option value="MNT">MNT</option>
+      <option value="MOP">MOP</option>
+      <option value="MRO">MRO</option>
+      <option value="MRU">MRU</option>
+      <option value="MTL">MTL</option>
+      <option value="MTP">MTP</option>
+      <option value="MUR">MUR</option>
+      <option value="MVR">MVR</option>
+      <option value="MWK">MWK</option>
+      <option value="MXN">MXN</option>
+      <option value="MXP">MXP</option>
+      <option value="MXV">MXV</option>
+      <option value="MYR">MYR</option>
+      <option value="MZM">MZM</option>
+      <option value="MZN">MZN</option>
+      <option value="NAD">NAD</option>
+      <option value="NBL">NBL</option>
+      <option value="NGN">NGN</option>
+      <option value="NIC">NIC</option>
+      <option value="NIO">NIO</option>
+      <option value="NLG">NLG</option>
+      <option value="NOK">NOK</option>
+      <option value="NPR">NPR</option>
+      <option value="NSO">NSO</option>
+      <option value="NZD">NZD</option>
+      <option value="OMR">OMR</option>
+      <option value="OSO">OSO</option>
+      <option value="PAB">PAB</option>
+      <option value="PEI">PEI</option>
+      <option value="PEN">PEN</option>
+      <option value="PES">PES</option>
+      <option value="PGK">PGK</option>
+      <option value="PHP">PHP</option>
+      <option value="PKR">PKR</option>
+      <option value="PLN">PLN</option>
+      <option value="PLZ">PLZ</option>
+      <option value="PTE">PTE</option>
+      <option value="PYG">PYG</option>
+      <option value="QAR">QAR</option>
+      <option value="ROL">ROL</option>
+      <option value="RON">RON</option>
+      <option value="RSD">RSD</option>
+      <option value="RUB">RUB</option>
+      <option value="RUR">RUR</option>
+      <option value="RWF">RWF</option>
+      <option value="SAR">SAR</option>
+      <option value="SBD">SBD</option>
+      <option value="SCR">SCR</option>
+      <option value="SDD">SDD</option>
+      <option value="SDG">SDG</option>
+      <option value="SDP">SDP</option>
+      <option value="SDR">SDR</option>
+      <option value="SEK">SEK</option>
+      <option value="SGD">SGD</option>
+      <option value="SHP">SHP</option>
+      <option value="SIT">SIT</option>
+      <option value="SKK">SKK</option>
+      <option value="SLL">SLL</option>
+      <option value="SOS">SOS</option>
+      <option value="SPL">SPL</option>
+      <option value="SRD">SRD</option>
+      <option value="SRG">SRG</option>
+      <option value="STD">STD</option>
+      <option value="STN">STN</option>
+      <option value="SUR">SUR</option>
+      <option value="SVC">SVC</option>
+      <option value="SYP">SYP</option>
+      <option value="SZL">SZL</option>
+      <option value="THB">THB</option>
+      <option value="TJR">TJR</option>
+      <option value="TJS">TJS</option>
+      <option value="TMM">TMM</option>
+      <option value="TMT">TMT</option>
+      <option value="TND">TND</option>
+      <option value="TOP">TOP</option>
+      <option value="TRL">TRL</option>
+      <option value="TRY">TRY</option>
+      <option value="TTD">TTD</option>
+      <option value="TVD">TVD</option>
+      <option value="TWD">TWD</option>
+      <option value="TZS">TZS</option>
+      <option value="UAH">UAH</option>
+      <option value="UGX">UGX</option>
+      <option value="UNK">UNK</option>
+      <option value="UYP">UYP</option>
+      <option value="UYU">UYU</option>
+      <option value="UZS">UZS</option>
+      <option value="VEB">VEB</option>
+      <option value="VEF">VEF</option>
+      <option value="VES">VES</option>
+      <option value="VND">VND</option>
+      <option value="VRL">VRL</option>
+      <option value="VRN">VRN</option>
+      <option value="VUV">VUV</option>
+      <option value="WST">WST</option>
+      <option value="XAF">XAF</option>
+      <option value="XAG">XAG</option>
+      <option value="XAU">XAU</option>
+      <option value="XCD">XCD</option>
+      <option value="XDR">XDR</option>
+      <option value="XEU">XEU</option>
+      <option value="XOF">XOF</option>
+      <option value="XPD">XPD</option>
+      <option value="XPF">XPF</option>
+      <option value="XPT">XPT</option>
+      <option value="YER">YER</option>
+      <option value="YUD">YUD</option>
+      <option value="YUM">YUM</option>
+      <option value="ZAL">ZAL</option>
+      <option value="ZAR">ZAR</option>
+      <option value="ZMK">ZMK</option>
+      <option value="ZMW">ZMW</option>
+      <option value="ZRN">ZRN</option>
+      <option value="ZRZ">ZRZ</option>
+      <option value="ZWD">ZWD</option>
+      <option value="ZWL">ZWL</option>
+      <option value="BAD">BAD</option>
+      <option value="NOCURRENCY">NOCURRENCY</option>
+    </options>
+   </parameter>
+   <parameter name="To" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="USD">USD</option>
+      <option value="AED">AED</option>
+      <option value="AFA">AFA</option>
+      <option value="AFN">AFN</option>
+      <option value="ALL">ALL</option>
+      <option value="AMD">AMD</option>
+      <option value="ANG">ANG</option>
+      <option value="AOA">AOA</option>
+      <option value="ARA">ARA</option>
+      <option value="ARE">ARE</option>
+      <option value="ARS">ARS</option>
+      <option value="ATS">ATS</option>
+      <option value="AUD">AUD</option>
+      <option value="AUN">AUN</option>
+      <option value="AWG">AWG</option>
+      <option value="AZM">AZM</option>
+      <option value="AZN">AZN</option>
+      <option value="BAM">BAM</option>
+      <option value="BBD">BBD</option>
+      <option value="BDT">BDT</option>
+      <option value="BEF">BEF</option>
+      <option value="BEL">BEL</option>
+      <option value="BGL">BGL</option>
+      <option value="BGN">BGN</option>
+      <option value="BHD">BHD</option>
+      <option value="BIF">BIF</option>
+      <option value="BMD">BMD</option>
+      <option value="BND">BND</option>
+      <option value="BOB">BOB</option>
+      <option value="BOV">BOV</option>
+      <option value="BRC">BRC</option>
+      <option value="BRE">BRE</option>
+      <option value="BRI">BRI</option>
+      <option value="BRL">BRL</option>
+      <option value="BRR">BRR</option>
+      <option value="BSD">BSD</option>
+      <option value="BTN">BTN</option>
+      <option value="BWP">BWP</option>
+      <option value="BYN">BYN</option>
+      <option value="BYR">BYR</option>
+      <option value="BZD">BZD</option>
+      <option value="CAD">CAD</option>
+      <option value="CDF">CDF</option>
+      <option value="CHF">CHF</option>
+      <option value="CLF">CLF</option>
+      <option value="CHK">CHK</option>
+      <option value="CLP">CLP</option>
+      <option value="CNY">CNY</option>
+      <option value="CNH">CNH</option>
+      <option value="COP">COP</option>
+      <option value="CRC">CRC</option>
+      <option value="CSD">CSD</option>
+      <option value="CUP">CUP</option>
+      <option value="CVE">CVE</option>
+      <option value="CYP">CYP</option>
+      <option value="CZK">CZK</option>
+      <option value="DEM">DEM</option>
+      <option value="DJF">DJF</option>
+      <option value="DKK">DKK</option>
+      <option value="DOP">DOP</option>
+      <option value="DOE">DOE</option>
+      <option value="DOW">DOW</option>
+      <option value="DZD">DZD</option>
+      <option value="ECS">ECS</option>
+      <option value="EEK">EEK</option>
+      <option value="EGP">EGP</option>
+      <option value="ERN">ERN</option>
+      <option value="ESP">ESP</option>
+      <option value="ETB">ETB</option>
+      <option value="EUR">EUR</option>
+      <option value="FIM">FIM</option>
+      <option value="FJD">FJD</option>
+      <option value="FKP">FKP</option>
+      <option value="FRF">FRF</option>
+      <option value="FRN">FRN</option>
+      <option value="GBP">GBP</option>
+      <option value="GEL">GEL</option>
+      <option value="GGP">GGP</option>
+      <option value="GHC">GHC</option>
+      <option value="GHS">GHS</option>
+      <option value="GIP">GIP</option>
+      <option value="GMD">GMD</option>
+      <option value="GNF">GNF</option>
+      <option value="GRD">GRD</option>
+      <option value="GTQ">GTQ</option>
+      <option value="GYD">GYD</option>
+      <option value="HKD">HKD</option>
+      <option value="HNL">HNL</option>
+      <option value="HRD">HRD</option>
+      <option value="HRK">HRK</option>
+      <option value="HTG">HTG</option>
+      <option value="HUF">HUF</option>
+      <option value="IDR">IDR</option>
+      <option value="IEP">IEP</option>
+      <option value="ILS">ILS</option>
+      <option value="IMP">IMP</option>
+      <option value="INR">INR</option>
+      <option value="IQD">IQD</option>
+      <option value="IRR">IRR</option>
+      <option value="ISK">ISK</option>
+      <option value="ITL">ITL</option>
+      <option value="JEP">JEP</option>
+      <option value="JMD">JMD</option>
+      <option value="JOD">JOD</option>
+      <option value="JPY">JPY</option>
+      <option value="KES">KES</option>
+      <option value="KGS">KGS</option>
+      <option value="KHR">KHR</option>
+      <option value="KMF">KMF</option>
+      <option value="KPW">KPW</option>
+      <option value="KRU">KRU</option>
+      <option value="KRW">KRW</option>
+      <option value="KWD">KWD</option>
+      <option value="KYD">KYD</option>
+      <option value="KZT">KZT</option>
+      <option value="LAK">LAK</option>
+      <option value="LBP">LBP</option>
+      <option value="LKR">LKR</option>
+      <option value="LRD">LRD</option>
+      <option value="LSL">LSL</option>
+      <option value="LTL">LTL</option>
+      <option value="LUF">LUF</option>
+      <option value="LVL">LVL</option>
+      <option value="LYD">LYD</option>
+      <option value="M5P">M5P</option>
+      <option value="MAD">MAD</option>
+      <option value="MAL">MAL</option>
+      <option value="MDL">MDL</option>
+      <option value="MFG">MFG</option>
+      <option value="MGA">MGA</option>
+      <option value="MKD">MKD</option>
+      <option value="MMK">MMK</option>
+      <option value="MNT">MNT</option>
+      <option value="MOP">MOP</option>
+      <option value="MRO">MRO</option>
+      <option value="MRU">MRU</option>
+      <option value="MTL">MTL</option>
+      <option value="MTP">MTP</option>
+      <option value="MUR">MUR</option>
+      <option value="MVR">MVR</option>
+      <option value="MWK">MWK</option>
+      <option value="MXN">MXN</option>
+      <option value="MXP">MXP</option>
+      <option value="MXV">MXV</option>
+      <option value="MYR">MYR</option>
+      <option value="MZM">MZM</option>
+      <option value="MZN">MZN</option>
+      <option value="NAD">NAD</option>
+      <option value="NBL">NBL</option>
+      <option value="NGN">NGN</option>
+      <option value="NIC">NIC</option>
+      <option value="NIO">NIO</option>
+      <option value="NLG">NLG</option>
+      <option value="NOK">NOK</option>
+      <option value="NPR">NPR</option>
+      <option value="NSO">NSO</option>
+      <option value="NZD">NZD</option>
+      <option value="OMR">OMR</option>
+      <option value="OSO">OSO</option>
+      <option value="PAB">PAB</option>
+      <option value="PEI">PEI</option>
+      <option value="PEN">PEN</option>
+      <option value="PES">PES</option>
+      <option value="PGK">PGK</option>
+      <option value="PHP">PHP</option>
+      <option value="PKR">PKR</option>
+      <option value="PLN">PLN</option>
+      <option value="PLZ">PLZ</option>
+      <option value="PTE">PTE</option>
+      <option value="PYG">PYG</option>
+      <option value="QAR">QAR</option>
+      <option value="ROL">ROL</option>
+      <option value="RON">RON</option>
+      <option value="RSD">RSD</option>
+      <option value="RUB">RUB</option>
+      <option value="RUR">RUR</option>
+      <option value="RWF">RWF</option>
+      <option value="SAR">SAR</option>
+      <option value="SBD">SBD</option>
+      <option value="SCR">SCR</option>
+      <option value="SDD">SDD</option>
+      <option value="SDG">SDG</option>
+      <option value="SDP">SDP</option>
+      <option value="SDR">SDR</option>
+      <option value="SEK">SEK</option>
+      <option value="SGD">SGD</option>
+      <option value="SHP">SHP</option>
+      <option value="SIT">SIT</option>
+      <option value="SKK">SKK</option>
+      <option value="SLL">SLL</option>
+      <option value="SOS">SOS</option>
+      <option value="SPL">SPL</option>
+      <option value="SRD">SRD</option>
+      <option value="SRG">SRG</option>
+      <option value="STD">STD</option>
+      <option value="STN">STN</option>
+      <option value="SUR">SUR</option>
+      <option value="SVC">SVC</option>
+      <option value="SYP">SYP</option>
+      <option value="SZL">SZL</option>
+      <option value="THB">THB</option>
+      <option value="TJR">TJR</option>
+      <option value="TJS">TJS</option>
+      <option value="TMM">TMM</option>
+      <option value="TMT">TMT</option>
+      <option value="TND">TND</option>
+      <option value="TOP">TOP</option>
+      <option value="TRL">TRL</option>
+      <option value="TRY">TRY</option>
+      <option value="TTD">TTD</option>
+      <option value="TVD">TVD</option>
+      <option value="TWD">TWD</option>
+      <option value="TZS">TZS</option>
+      <option value="UAH">UAH</option>
+      <option value="UGX">UGX</option>
+      <option value="UNK">UNK</option>
+      <option value="UYP">UYP</option>
+      <option value="UYU">UYU</option>
+      <option value="UZS">UZS</option>
+      <option value="VEB">VEB</option>
+      <option value="VEF">VEF</option>
+      <option value="VES">VES</option>
+      <option value="VND">VND</option>
+      <option value="VRL">VRL</option>
+      <option value="VRN">VRN</option>
+      <option value="VUV">VUV</option>
+      <option value="WST">WST</option>
+      <option value="XAF">XAF</option>
+      <option value="XAG">XAG</option>
+      <option value="XAU">XAU</option>
+      <option value="XCD">XCD</option>
+      <option value="XDR">XDR</option>
+      <option value="XEU">XEU</option>
+      <option value="XOF">XOF</option>
+      <option value="XPD">XPD</option>
+      <option value="XPF">XPF</option>
+      <option value="XPT">XPT</option>
+      <option value="YER">YER</option>
+      <option value="YUD">YUD</option>
+      <option value="YUM">YUM</option>
+      <option value="ZAL">ZAL</option>
+      <option value="ZAR">ZAR</option>
+      <option value="ZMK">ZMK</option>
+      <option value="ZMW">ZMW</option>
+      <option value="ZRN">ZRN</option>
+      <option value="ZRZ">ZRZ</option>
+      <option value="ZWD">ZWD</option>
+      <option value="ZWL">ZWL</option>
+      <option value="BAD">BAD</option>
+      <option value="NOCURRENCY">NOCURRENCY</option>
+    </options>
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRealTimeCrossRateResult" type="CrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRealTimeCrossRateGMT" soapAction="http://www.xignite.com/services/GetRealTimeCrossRateGMT" resultsNode="GetRealTimeCrossRateGMTResult">
+  <description>Returns a real-time currency cross-rate with the times in GMT.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="USD">USD</option>
+      <option value="AED">AED</option>
+      <option value="AFA">AFA</option>
+      <option value="AFN">AFN</option>
+      <option value="ALL">ALL</option>
+      <option value="AMD">AMD</option>
+      <option value="ANG">ANG</option>
+      <option value="AOA">AOA</option>
+      <option value="ARA">ARA</option>
+      <option value="ARE">ARE</option>
+      <option value="ARS">ARS</option>
+      <option value="ATS">ATS</option>
+      <option value="AUD">AUD</option>
+      <option value="AUN">AUN</option>
+      <option value="AWG">AWG</option>
+      <option value="AZM">AZM</option>
+      <option value="AZN">AZN</option>
+      <option value="BAM">BAM</option>
+      <option value="BBD">BBD</option>
+      <option value="BDT">BDT</option>
+      <option value="BEF">BEF</option>
+      <option value="BEL">BEL</option>
+      <option value="BGL">BGL</option>
+      <option value="BGN">BGN</option>
+      <option value="BHD">BHD</option>
+      <option value="BIF">BIF</option>
+      <option value="BMD">BMD</option>
+      <option value="BND">BND</option>
+      <option value="BOB">BOB</option>
+      <option value="BOV">BOV</option>
+      <option value="BRC">BRC</option>
+      <option value="BRE">BRE</option>
+      <option value="BRI">BRI</option>
+      <option value="BRL">BRL</option>
+      <option value="BRR">BRR</option>
+      <option value="BSD">BSD</option>
+      <option value="BTN">BTN</option>
+      <option value="BWP">BWP</option>
+      <option value="BYN">BYN</option>
+      <option value="BYR">BYR</option>
+      <option value="BZD">BZD</option>
+      <option value="CAD">CAD</option>
+      <option value="CDF">CDF</option>
+      <option value="CHF">CHF</option>
+      <option value="CLF">CLF</option>
+      <option value="CHK">CHK</option>
+      <option value="CLP">CLP</option>
+      <option value="CNY">CNY</option>
+      <option value="CNH">CNH</option>
+      <option value="COP">COP</option>
+      <option value="CRC">CRC</option>
+      <option value="CSD">CSD</option>
+      <option value="CUP">CUP</option>
+      <option value="CVE">CVE</option>
+      <option value="CYP">CYP</option>
+      <option value="CZK">CZK</option>
+      <option value="DEM">DEM</option>
+      <option value="DJF">DJF</option>
+      <option value="DKK">DKK</option>
+      <option value="DOP">DOP</option>
+      <option value="DOE">DOE</option>
+      <option value="DOW">DOW</option>
+      <option value="DZD">DZD</option>
+      <option value="ECS">ECS</option>
+      <option value="EEK">EEK</option>
+      <option value="EGP">EGP</option>
+      <option value="ERN">ERN</option>
+      <option value="ESP">ESP</option>
+      <option value="ETB">ETB</option>
+      <option value="EUR">EUR</option>
+      <option value="FIM">FIM</option>
+      <option value="FJD">FJD</option>
+      <option value="FKP">FKP</option>
+      <option value="FRF">FRF</option>
+      <option value="FRN">FRN</option>
+      <option value="GBP">GBP</option>
+      <option value="GEL">GEL</option>
+      <option value="GGP">GGP</option>
+      <option value="GHC">GHC</option>
+      <option value="GHS">GHS</option>
+      <option value="GIP">GIP</option>
+      <option value="GMD">GMD</option>
+      <option value="GNF">GNF</option>
+      <option value="GRD">GRD</option>
+      <option value="GTQ">GTQ</option>
+      <option value="GYD">GYD</option>
+      <option value="HKD">HKD</option>
+      <option value="HNL">HNL</option>
+      <option value="HRD">HRD</option>
+      <option value="HRK">HRK</option>
+      <option value="HTG">HTG</option>
+      <option value="HUF">HUF</option>
+      <option value="IDR">IDR</option>
+      <option value="IEP">IEP</option>
+      <option value="ILS">ILS</option>
+      <option value="IMP">IMP</option>
+      <option value="INR">INR</option>
+      <option value="IQD">IQD</option>
+      <option value="IRR">IRR</option>
+      <option value="ISK">ISK</option>
+      <option value="ITL">ITL</option>
+      <option value="JEP">JEP</option>
+      <option value="JMD">JMD</option>
+      <option value="JOD">JOD</option>
+      <option value="JPY">JPY</option>
+      <option value="KES">KES</option>
+      <option value="KGS">KGS</option>
+      <option value="KHR">KHR</option>
+      <option value="KMF">KMF</option>
+      <option value="KPW">KPW</option>
+      <option value="KRU">KRU</option>
+      <option value="KRW">KRW</option>
+      <option value="KWD">KWD</option>
+      <option value="KYD">KYD</option>
+      <option value="KZT">KZT</option>
+      <option value="LAK">LAK</option>
+      <option value="LBP">LBP</option>
+      <option value="LKR">LKR</option>
+      <option value="LRD">LRD</option>
+      <option value="LSL">LSL</option>
+      <option value="LTL">LTL</option>
+      <option value="LUF">LUF</option>
+      <option value="LVL">LVL</option>
+      <option value="LYD">LYD</option>
+      <option value="M5P">M5P</option>
+      <option value="MAD">MAD</option>
+      <option value="MAL">MAL</option>
+      <option value="MDL">MDL</option>
+      <option value="MFG">MFG</option>
+      <option value="MGA">MGA</option>
+      <option value="MKD">MKD</option>
+      <option value="MMK">MMK</option>
+      <option value="MNT">MNT</option>
+      <option value="MOP">MOP</option>
+      <option value="MRO">MRO</option>
+      <option value="MRU">MRU</option>
+      <option value="MTL">MTL</option>
+      <option value="MTP">MTP</option>
+      <option value="MUR">MUR</option>
+      <option value="MVR">MVR</option>
+      <option value="MWK">MWK</option>
+      <option value="MXN">MXN</option>
+      <option value="MXP">MXP</option>
+      <option value="MXV">MXV</option>
+      <option value="MYR">MYR</option>
+      <option value="MZM">MZM</option>
+      <option value="MZN">MZN</option>
+      <option value="NAD">NAD</option>
+      <option value="NBL">NBL</option>
+      <option value="NGN">NGN</option>
+      <option value="NIC">NIC</option>
+      <option value="NIO">NIO</option>
+      <option value="NLG">NLG</option>
+      <option value="NOK">NOK</option>
+      <option value="NPR">NPR</option>
+      <option value="NSO">NSO</option>
+      <option value="NZD">NZD</option>
+      <option value="OMR">OMR</option>
+      <option value="OSO">OSO</option>
+      <option value="PAB">PAB</option>
+      <option value="PEI">PEI</option>
+      <option value="PEN">PEN</option>
+      <option value="PES">PES</option>
+      <option value="PGK">PGK</option>
+      <option value="PHP">PHP</option>
+      <option value="PKR">PKR</option>
+      <option value="PLN">PLN</option>
+      <option value="PLZ">PLZ</option>
+      <option value="PTE">PTE</option>
+      <option value="PYG">PYG</option>
+      <option value="QAR">QAR</option>
+      <option value="ROL">ROL</option>
+      <option value="RON">RON</option>
+      <option value="RSD">RSD</option>
+      <option value="RUB">RUB</option>
+      <option value="RUR">RUR</option>
+      <option value="RWF">RWF</option>
+      <option value="SAR">SAR</option>
+      <option value="SBD">SBD</option>
+      <option value="SCR">SCR</option>
+      <option value="SDD">SDD</option>
+      <option value="SDG">SDG</option>
+      <option value="SDP">SDP</option>
+      <option value="SDR">SDR</option>
+      <option value="SEK">SEK</option>
+      <option value="SGD">SGD</option>
+      <option value="SHP">SHP</option>
+      <option value="SIT">SIT</option>
+      <option value="SKK">SKK</option>
+      <option value="SLL">SLL</option>
+      <option value="SOS">SOS</option>
+      <option value="SPL">SPL</option>
+      <option value="SRD">SRD</option>
+      <option value="SRG">SRG</option>
+      <option value="STD">STD</option>
+      <option value="STN">STN</option>
+      <option value="SUR">SUR</option>
+      <option value="SVC">SVC</option>
+      <option value="SYP">SYP</option>
+      <option value="SZL">SZL</option>
+      <option value="THB">THB</option>
+      <option value="TJR">TJR</option>
+      <option value="TJS">TJS</option>
+      <option value="TMM">TMM</option>
+      <option value="TMT">TMT</option>
+      <option value="TND">TND</option>
+      <option value="TOP">TOP</option>
+      <option value="TRL">TRL</option>
+      <option value="TRY">TRY</option>
+      <option value="TTD">TTD</option>
+      <option value="TVD">TVD</option>
+      <option value="TWD">TWD</option>
+      <option value="TZS">TZS</option>
+      <option value="UAH">UAH</option>
+      <option value="UGX">UGX</option>
+      <option value="UNK">UNK</option>
+      <option value="UYP">UYP</option>
+      <option value="UYU">UYU</option>
+      <option value="UZS">UZS</option>
+      <option value="VEB">VEB</option>
+      <option value="VEF">VEF</option>
+      <option value="VES">VES</option>
+      <option value="VND">VND</option>
+      <option value="VRL">VRL</option>
+      <option value="VRN">VRN</option>
+      <option value="VUV">VUV</option>
+      <option value="WST">WST</option>
+      <option value="XAF">XAF</option>
+      <option value="XAG">XAG</option>
+      <option value="XAU">XAU</option>
+      <option value="XCD">XCD</option>
+      <option value="XDR">XDR</option>
+      <option value="XEU">XEU</option>
+      <option value="XOF">XOF</option>
+      <option value="XPD">XPD</option>
+      <option value="XPF">XPF</option>
+      <option value="XPT">XPT</option>
+      <option value="YER">YER</option>
+      <option value="YUD">YUD</option>
+      <option value="YUM">YUM</option>
+      <option value="ZAL">ZAL</option>
+      <option value="ZAR">ZAR</option>
+      <option value="ZMK">ZMK</option>
+      <option value="ZMW">ZMW</option>
+      <option value="ZRN">ZRN</option>
+      <option value="ZRZ">ZRZ</option>
+      <option value="ZWD">ZWD</option>
+      <option value="ZWL">ZWL</option>
+      <option value="BAD">BAD</option>
+      <option value="NOCURRENCY">NOCURRENCY</option>
+    </options>
+   </parameter>
+   <parameter name="To" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="USD">USD</option>
+      <option value="AED">AED</option>
+      <option value="AFA">AFA</option>
+      <option value="AFN">AFN</option>
+      <option value="ALL">ALL</option>
+      <option value="AMD">AMD</option>
+      <option value="ANG">ANG</option>
+      <option value="AOA">AOA</option>
+      <option value="ARA">ARA</option>
+      <option value="ARE">ARE</option>
+      <option value="ARS">ARS</option>
+      <option value="ATS">ATS</option>
+      <option value="AUD">AUD</option>
+      <option value="AUN">AUN</option>
+      <option value="AWG">AWG</option>
+      <option value="AZM">AZM</option>
+      <option value="AZN">AZN</option>
+      <option value="BAM">BAM</option>
+      <option value="BBD">BBD</option>
+      <option value="BDT">BDT</option>
+      <option value="BEF">BEF</option>
+      <option value="BEL">BEL</option>
+      <option value="BGL">BGL</option>
+      <option value="BGN">BGN</option>
+      <option value="BHD">BHD</option>
+      <option value="BIF">BIF</option>
+      <option value="BMD">BMD</option>
+      <option value="BND">BND</option>
+      <option value="BOB">BOB</option>
+      <option value="BOV">BOV</option>
+      <option value="BRC">BRC</option>
+      <option value="BRE">BRE</option>
+      <option value="BRI">BRI</option>
+      <option value="BRL">BRL</option>
+      <option value="BRR">BRR</option>
+      <option value="BSD">BSD</option>
+      <option value="BTN">BTN</option>
+      <option value="BWP">BWP</option>
+      <option value="BYN">BYN</option>
+      <option value="BYR">BYR</option>
+      <option value="BZD">BZD</option>
+      <option value="CAD">CAD</option>
+      <option value="CDF">CDF</option>
+      <option value="CHF">CHF</option>
+      <option value="CLF">CLF</option>
+      <option value="CHK">CHK</option>
+      <option value="CLP">CLP</option>
+      <option value="CNY">CNY</option>
+      <option value="CNH">CNH</option>
+      <option value="COP">COP</option>
+      <option value="CRC">CRC</option>
+      <option value="CSD">CSD</option>
+      <option value="CUP">CUP</option>
+      <option value="CVE">CVE</option>
+      <option value="CYP">CYP</option>
+      <option value="CZK">CZK</option>
+      <option value="DEM">DEM</option>
+      <option value="DJF">DJF</option>
+      <option value="DKK">DKK</option>
+      <option value="DOP">DOP</option>
+      <option value="DOE">DOE</option>
+      <option value="DOW">DOW</option>
+      <option value="DZD">DZD</option>
+      <option value="ECS">ECS</option>
+      <option value="EEK">EEK</option>
+      <option value="EGP">EGP</option>
+      <option value="ERN">ERN</option>
+      <option value="ESP">ESP</option>
+      <option value="ETB">ETB</option>
+      <option value="EUR">EUR</option>
+      <option value="FIM">FIM</option>
+      <option value="FJD">FJD</option>
+      <option value="FKP">FKP</option>
+      <option value="FRF">FRF</option>
+      <option value="FRN">FRN</option>
+      <option value="GBP">GBP</option>
+      <option value="GEL">GEL</option>
+      <option value="GGP">GGP</option>
+      <option value="GHC">GHC</option>
+      <option value="GHS">GHS</option>
+      <option value="GIP">GIP</option>
+      <option value="GMD">GMD</option>
+      <option value="GNF">GNF</option>
+      <option value="GRD">GRD</option>
+      <option value="GTQ">GTQ</option>
+      <option value="GYD">GYD</option>
+      <option value="HKD">HKD</option>
+      <option value="HNL">HNL</option>
+      <option value="HRD">HRD</option>
+      <option value="HRK">HRK</option>
+      <option value="HTG">HTG</option>
+      <option value="HUF">HUF</option>
+      <option value="IDR">IDR</option>
+      <option value="IEP">IEP</option>
+      <option value="ILS">ILS</option>
+      <option value="IMP">IMP</option>
+      <option value="INR">INR</option>
+      <option value="IQD">IQD</option>
+      <option value="IRR">IRR</option>
+      <option value="ISK">ISK</option>
+      <option value="ITL">ITL</option>
+      <option value="JEP">JEP</option>
+      <option value="JMD">JMD</option>
+      <option value="JOD">JOD</option>
+      <option value="JPY">JPY</option>
+      <option value="KES">KES</option>
+      <option value="KGS">KGS</option>
+      <option value="KHR">KHR</option>
+      <option value="KMF">KMF</option>
+      <option value="KPW">KPW</option>
+      <option value="KRU">KRU</option>
+      <option value="KRW">KRW</option>
+      <option value="KWD">KWD</option>
+      <option value="KYD">KYD</option>
+      <option value="KZT">KZT</option>
+      <option value="LAK">LAK</option>
+      <option value="LBP">LBP</option>
+      <option value="LKR">LKR</option>
+      <option value="LRD">LRD</option>
+      <option value="LSL">LSL</option>
+      <option value="LTL">LTL</option>
+      <option value="LUF">LUF</option>
+      <option value="LVL">LVL</option>
+      <option value="LYD">LYD</option>
+      <option value="M5P">M5P</option>
+      <option value="MAD">MAD</option>
+      <option value="MAL">MAL</option>
+      <option value="MDL">MDL</option>
+      <option value="MFG">MFG</option>
+      <option value="MGA">MGA</option>
+      <option value="MKD">MKD</option>
+      <option value="MMK">MMK</option>
+      <option value="MNT">MNT</option>
+      <option value="MOP">MOP</option>
+      <option value="MRO">MRO</option>
+      <option value="MRU">MRU</option>
+      <option value="MTL">MTL</option>
+      <option value="MTP">MTP</option>
+      <option value="MUR">MUR</option>
+      <option value="MVR">MVR</option>
+      <option value="MWK">MWK</option>
+      <option value="MXN">MXN</option>
+      <option value="MXP">MXP</option>
+      <option value="MXV">MXV</option>
+      <option value="MYR">MYR</option>
+      <option value="MZM">MZM</option>
+      <option value="MZN">MZN</option>
+      <option value="NAD">NAD</option>
+      <option value="NBL">NBL</option>
+      <option value="NGN">NGN</option>
+      <option value="NIC">NIC</option>
+      <option value="NIO">NIO</option>
+      <option value="NLG">NLG</option>
+      <option value="NOK">NOK</option>
+      <option value="NPR">NPR</option>
+      <option value="NSO">NSO</option>
+      <option value="NZD">NZD</option>
+      <option value="OMR">OMR</option>
+      <option value="OSO">OSO</option>
+      <option value="PAB">PAB</option>
+      <option value="PEI">PEI</option>
+      <option value="PEN">PEN</option>
+      <option value="PES">PES</option>
+      <option value="PGK">PGK</option>
+      <option value="PHP">PHP</option>
+      <option value="PKR">PKR</option>
+      <option value="PLN">PLN</option>
+      <option value="PLZ">PLZ</option>
+      <option value="PTE">PTE</option>
+      <option value="PYG">PYG</option>
+      <option value="QAR">QAR</option>
+      <option value="ROL">ROL</option>
+      <option value="RON">RON</option>
+      <option value="RSD">RSD</option>
+      <option value="RUB">RUB</option>
+      <option value="RUR">RUR</option>
+      <option value="RWF">RWF</option>
+      <option value="SAR">SAR</option>
+      <option value="SBD">SBD</option>
+      <option value="SCR">SCR</option>
+      <option value="SDD">SDD</option>
+      <option value="SDG">SDG</option>
+      <option value="SDP">SDP</option>
+      <option value="SDR">SDR</option>
+      <option value="SEK">SEK</option>
+      <option value="SGD">SGD</option>
+      <option value="SHP">SHP</option>
+      <option value="SIT">SIT</option>
+      <option value="SKK">SKK</option>
+      <option value="SLL">SLL</option>
+      <option value="SOS">SOS</option>
+      <option value="SPL">SPL</option>
+      <option value="SRD">SRD</option>
+      <option value="SRG">SRG</option>
+      <option value="STD">STD</option>
+      <option value="STN">STN</option>
+      <option value="SUR">SUR</option>
+      <option value="SVC">SVC</option>
+      <option value="SYP">SYP</option>
+      <option value="SZL">SZL</option>
+      <option value="THB">THB</option>
+      <option value="TJR">TJR</option>
+      <option value="TJS">TJS</option>
+      <option value="TMM">TMM</option>
+      <option value="TMT">TMT</option>
+      <option value="TND">TND</option>
+      <option value="TOP">TOP</option>
+      <option value="TRL">TRL</option>
+      <option value="TRY">TRY</option>
+      <option value="TTD">TTD</option>
+      <option value="TVD">TVD</option>
+      <option value="TWD">TWD</option>
+      <option value="TZS">TZS</option>
+      <option value="UAH">UAH</option>
+      <option value="UGX">UGX</option>
+      <option value="UNK">UNK</option>
+      <option value="UYP">UYP</option>
+      <option value="UYU">UYU</option>
+      <option value="UZS">UZS</option>
+      <option value="VEB">VEB</option>
+      <option value="VEF">VEF</option>
+      <option value="VES">VES</option>
+      <option value="VND">VND</option>
+      <option value="VRL">VRL</option>
+      <option value="VRN">VRN</option>
+      <option value="VUV">VUV</option>
+      <option value="WST">WST</option>
+      <option value="XAF">XAF</option>
+      <option value="XAG">XAG</option>
+      <option value="XAU">XAU</option>
+      <option value="XCD">XCD</option>
+      <option value="XDR">XDR</option>
+      <option value="XEU">XEU</option>
+      <option value="XOF">XOF</option>
+      <option value="XPD">XPD</option>
+      <option value="XPF">XPF</option>
+      <option value="XPT">XPT</option>
+      <option value="YER">YER</option>
+      <option value="YUD">YUD</option>
+      <option value="YUM">YUM</option>
+      <option value="ZAL">ZAL</option>
+      <option value="ZAR">ZAR</option>
+      <option value="ZMK">ZMK</option>
+      <option value="ZMW">ZMW</option>
+      <option value="ZRN">ZRN</option>
+      <option value="ZRZ">ZRZ</option>
+      <option value="ZWD">ZWD</option>
+      <option value="ZWL">ZWL</option>
+      <option value="BAD">BAD</option>
+      <option value="NOCURRENCY">NOCURRENCY</option>
+    </options>
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRealTimeCrossRateGMTResult" type="CrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRawCrossRate" soapAction="http://www.xignite.com/services/GetRawCrossRate" resultsNode="GetRawCrossRateResult">
+  <description>Returns a real-time currency cross-rate.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="USD">USD</option>
+      <option value="AED">AED</option>
+      <option value="AFA">AFA</option>
+      <option value="AFN">AFN</option>
+      <option value="ALL">ALL</option>
+      <option value="AMD">AMD</option>
+      <option value="ANG">ANG</option>
+      <option value="AOA">AOA</option>
+      <option value="ARA">ARA</option>
+      <option value="ARE">ARE</option>
+      <option value="ARS">ARS</option>
+      <option value="ATS">ATS</option>
+      <option value="AUD">AUD</option>
+      <option value="AUN">AUN</option>
+      <option value="AWG">AWG</option>
+      <option value="AZM">AZM</option>
+      <option value="AZN">AZN</option>
+      <option value="BAM">BAM</option>
+      <option value="BBD">BBD</option>
+      <option value="BDT">BDT</option>
+      <option value="BEF">BEF</option>
+      <option value="BEL">BEL</option>
+      <option value="BGL">BGL</option>
+      <option value="BGN">BGN</option>
+      <option value="BHD">BHD</option>
+      <option value="BIF">BIF</option>
+      <option value="BMD">BMD</option>
+      <option value="BND">BND</option>
+      <option value="BOB">BOB</option>
+      <option value="BOV">BOV</option>
+      <option value="BRC">BRC</option>
+      <option value="BRE">BRE</option>
+      <option value="BRI">BRI</option>
+      <option value="BRL">BRL</option>
+      <option value="BRR">BRR</option>
+      <option value="BSD">BSD</option>
+      <option value="BTN">BTN</option>
+      <option value="BWP">BWP</option>
+      <option value="BYN">BYN</option>
+      <option value="BYR">BYR</option>
+      <option value="BZD">BZD</option>
+      <option value="CAD">CAD</option>
+      <option value="CDF">CDF</option>
+      <option value="CHF">CHF</option>
+      <option value="CLF">CLF</option>
+      <option value="CHK">CHK</option>
+      <option value="CLP">CLP</option>
+      <option value="CNY">CNY</option>
+      <option value="CNH">CNH</option>
+      <option value="COP">COP</option>
+      <option value="CRC">CRC</option>
+      <option value="CSD">CSD</option>
+      <option value="CUP">CUP</option>
+      <option value="CVE">CVE</option>
+      <option value="CYP">CYP</option>
+      <option value="CZK">CZK</option>
+      <option value="DEM">DEM</option>
+      <option value="DJF">DJF</option>
+      <option value="DKK">DKK</option>
+      <option value="DOP">DOP</option>
+      <option value="DOE">DOE</option>
+      <option value="DOW">DOW</option>
+      <option value="DZD">DZD</option>
+      <option value="ECS">ECS</option>
+      <option value="EEK">EEK</option>
+      <option value="EGP">EGP</option>
+      <option value="ERN">ERN</option>
+      <option value="ESP">ESP</option>
+      <option value="ETB">ETB</option>
+      <option value="EUR">EUR</option>
+      <option value="FIM">FIM</option>
+      <option value="FJD">FJD</option>
+      <option value="FKP">FKP</option>
+      <option value="FRF">FRF</option>
+      <option value="FRN">FRN</option>
+      <option value="GBP">GBP</option>
+      <option value="GEL">GEL</option>
+      <option value="GGP">GGP</option>
+      <option value="GHC">GHC</option>
+      <option value="GHS">GHS</option>
+      <option value="GIP">GIP</option>
+      <option value="GMD">GMD</option>
+      <option value="GNF">GNF</option>
+      <option value="GRD">GRD</option>
+      <option value="GTQ">GTQ</option>
+      <option value="GYD">GYD</option>
+      <option value="HKD">HKD</option>
+      <option value="HNL">HNL</option>
+      <option value="HRD">HRD</option>
+      <option value="HRK">HRK</option>
+      <option value="HTG">HTG</option>
+      <option value="HUF">HUF</option>
+      <option value="IDR">IDR</option>
+      <option value="IEP">IEP</option>
+      <option value="ILS">ILS</option>
+      <option value="IMP">IMP</option>
+      <option value="INR">INR</option>
+      <option value="IQD">IQD</option>
+      <option value="IRR">IRR</option>
+      <option value="ISK">ISK</option>
+      <option value="ITL">ITL</option>
+      <option value="JEP">JEP</option>
+      <option value="JMD">JMD</option>
+      <option value="JOD">JOD</option>
+      <option value="JPY">JPY</option>
+      <option value="KES">KES</option>
+      <option value="KGS">KGS</option>
+      <option value="KHR">KHR</option>
+      <option value="KMF">KMF</option>
+      <option value="KPW">KPW</option>
+      <option value="KRU">KRU</option>
+      <option value="KRW">KRW</option>
+      <option value="KWD">KWD</option>
+      <option value="KYD">KYD</option>
+      <option value="KZT">KZT</option>
+      <option value="LAK">LAK</option>
+      <option value="LBP">LBP</option>
+      <option value="LKR">LKR</option>
+      <option value="LRD">LRD</option>
+      <option value="LSL">LSL</option>
+      <option value="LTL">LTL</option>
+      <option value="LUF">LUF</option>
+      <option value="LVL">LVL</option>
+      <option value="LYD">LYD</option>
+      <option value="M5P">M5P</option>
+      <option value="MAD">MAD</option>
+      <option value="MAL">MAL</option>
+      <option value="MDL">MDL</option>
+      <option value="MFG">MFG</option>
+      <option value="MGA">MGA</option>
+      <option value="MKD">MKD</option>
+      <option value="MMK">MMK</option>
+      <option value="MNT">MNT</option>
+      <option value="MOP">MOP</option>
+      <option value="MRO">MRO</option>
+      <option value="MRU">MRU</option>
+      <option value="MTL">MTL</option>
+      <option value="MTP">MTP</option>
+      <option value="MUR">MUR</option>
+      <option value="MVR">MVR</option>
+      <option value="MWK">MWK</option>
+      <option value="MXN">MXN</option>
+      <option value="MXP">MXP</option>
+      <option value="MXV">MXV</option>
+      <option value="MYR">MYR</option>
+      <option value="MZM">MZM</option>
+      <option value="MZN">MZN</option>
+      <option value="NAD">NAD</option>
+      <option value="NBL">NBL</option>
+      <option value="NGN">NGN</option>
+      <option value="NIC">NIC</option>
+      <option value="NIO">NIO</option>
+      <option value="NLG">NLG</option>
+      <option value="NOK">NOK</option>
+      <option value="NPR">NPR</option>
+      <option value="NSO">NSO</option>
+      <option value="NZD">NZD</option>
+      <option value="OMR">OMR</option>
+      <option value="OSO">OSO</option>
+      <option value="PAB">PAB</option>
+      <option value="PEI">PEI</option>
+      <option value="PEN">PEN</option>
+      <option value="PES">PES</option>
+      <option value="PGK">PGK</option>
+      <option value="PHP">PHP</option>
+      <option value="PKR">PKR</option>
+      <option value="PLN">PLN</option>
+      <option value="PLZ">PLZ</option>
+      <option value="PTE">PTE</option>
+      <option value="PYG">PYG</option>
+      <option value="QAR">QAR</option>
+      <option value="ROL">ROL</option>
+      <option value="RON">RON</option>
+      <option value="RSD">RSD</option>
+      <option value="RUB">RUB</option>
+      <option value="RUR">RUR</option>
+      <option value="RWF">RWF</option>
+      <option value="SAR">SAR</option>
+      <option value="SBD">SBD</option>
+      <option value="SCR">SCR</option>
+      <option value="SDD">SDD</option>
+      <option value="SDG">SDG</option>
+      <option value="SDP">SDP</option>
+      <option value="SDR">SDR</option>
+      <option value="SEK">SEK</option>
+      <option value="SGD">SGD</option>
+      <option value="SHP">SHP</option>
+      <option value="SIT">SIT</option>
+      <option value="SKK">SKK</option>
+      <option value="SLL">SLL</option>
+      <option value="SOS">SOS</option>
+      <option value="SPL">SPL</option>
+      <option value="SRD">SRD</option>
+      <option value="SRG">SRG</option>
+      <option value="STD">STD</option>
+      <option value="STN">STN</option>
+      <option value="SUR">SUR</option>
+      <option value="SVC">SVC</option>
+      <option value="SYP">SYP</option>
+      <option value="SZL">SZL</option>
+      <option value="THB">THB</option>
+      <option value="TJR">TJR</option>
+      <option value="TJS">TJS</option>
+      <option value="TMM">TMM</option>
+      <option value="TMT">TMT</option>
+      <option value="TND">TND</option>
+      <option value="TOP">TOP</option>
+      <option value="TRL">TRL</option>
+      <option value="TRY">TRY</option>
+      <option value="TTD">TTD</option>
+      <option value="TVD">TVD</option>
+      <option value="TWD">TWD</option>
+      <option value="TZS">TZS</option>
+      <option value="UAH">UAH</option>
+      <option value="UGX">UGX</option>
+      <option value="UNK">UNK</option>
+      <option value="UYP">UYP</option>
+      <option value="UYU">UYU</option>
+      <option value="UZS">UZS</option>
+      <option value="VEB">VEB</option>
+      <option value="VEF">VEF</option>
+      <option value="VES">VES</option>
+      <option value="VND">VND</option>
+      <option value="VRL">VRL</option>
+      <option value="VRN">VRN</option>
+      <option value="VUV">VUV</option>
+      <option value="WST">WST</option>
+      <option value="XAF">XAF</option>
+      <option value="XAG">XAG</option>
+      <option value="XAU">XAU</option>
+      <option value="XCD">XCD</option>
+      <option value="XDR">XDR</option>
+      <option value="XEU">XEU</option>
+      <option value="XOF">XOF</option>
+      <option value="XPD">XPD</option>
+      <option value="XPF">XPF</option>
+      <option value="XPT">XPT</option>
+      <option value="YER">YER</option>
+      <option value="YUD">YUD</option>
+      <option value="YUM">YUM</option>
+      <option value="ZAL">ZAL</option>
+      <option value="ZAR">ZAR</option>
+      <option value="ZMK">ZMK</option>
+      <option value="ZMW">ZMW</option>
+      <option value="ZRN">ZRN</option>
+      <option value="ZRZ">ZRZ</option>
+      <option value="ZWD">ZWD</option>
+      <option value="ZWL">ZWL</option>
+      <option value="BAD">BAD</option>
+      <option value="NOCURRENCY">NOCURRENCY</option>
+    </options>
+   </parameter>
+   <parameter name="To" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="USD">USD</option>
+      <option value="AED">AED</option>
+      <option value="AFA">AFA</option>
+      <option value="AFN">AFN</option>
+      <option value="ALL">ALL</option>
+      <option value="AMD">AMD</option>
+      <option value="ANG">ANG</option>
+      <option value="AOA">AOA</option>
+      <option value="ARA">ARA</option>
+      <option value="ARE">ARE</option>
+      <option value="ARS">ARS</option>
+      <option value="ATS">ATS</option>
+      <option value="AUD">AUD</option>
+      <option value="AUN">AUN</option>
+      <option value="AWG">AWG</option>
+      <option value="AZM">AZM</option>
+      <option value="AZN">AZN</option>
+      <option value="BAM">BAM</option>
+      <option value="BBD">BBD</option>
+      <option value="BDT">BDT</option>
+      <option value="BEF">BEF</option>
+      <option value="BEL">BEL</option>
+      <option value="BGL">BGL</option>
+      <option value="BGN">BGN</option>
+      <option value="BHD">BHD</option>
+      <option value="BIF">BIF</option>
+      <option value="BMD">BMD</option>
+      <option value="BND">BND</option>
+      <option value="BOB">BOB</option>
+      <option value="BOV">BOV</option>
+      <option value="BRC">BRC</option>
+      <option value="BRE">BRE</option>
+      <option value="BRI">BRI</option>
+      <option value="BRL">BRL</option>
+      <option value="BRR">BRR</option>
+      <option value="BSD">BSD</option>
+      <option value="BTN">BTN</option>
+      <option value="BWP">BWP</option>
+      <option value="BYN">BYN</option>
+      <option value="BYR">BYR</option>
+      <option value="BZD">BZD</option>
+      <option value="CAD">CAD</option>
+      <option value="CDF">CDF</option>
+      <option value="CHF">CHF</option>
+      <option value="CLF">CLF</option>
+      <option value="CHK">CHK</option>
+      <option value="CLP">CLP</option>
+      <option value="CNY">CNY</option>
+      <option value="CNH">CNH</option>
+      <option value="COP">COP</option>
+      <option value="CRC">CRC</option>
+      <option value="CSD">CSD</option>
+      <option value="CUP">CUP</option>
+      <option value="CVE">CVE</option>
+      <option value="CYP">CYP</option>
+      <option value="CZK">CZK</option>
+      <option value="DEM">DEM</option>
+      <option value="DJF">DJF</option>
+      <option value="DKK">DKK</option>
+      <option value="DOP">DOP</option>
+      <option value="DOE">DOE</option>
+      <option value="DOW">DOW</option>
+      <option value="DZD">DZD</option>
+      <option value="ECS">ECS</option>
+      <option value="EEK">EEK</option>
+      <option value="EGP">EGP</option>
+      <option value="ERN">ERN</option>
+      <option value="ESP">ESP</option>
+      <option value="ETB">ETB</option>
+      <option value="EUR">EUR</option>
+      <option value="FIM">FIM</option>
+      <option value="FJD">FJD</option>
+      <option value="FKP">FKP</option>
+      <option value="FRF">FRF</option>
+      <option value="FRN">FRN</option>
+      <option value="GBP">GBP</option>
+      <option value="GEL">GEL</option>
+      <option value="GGP">GGP</option>
+      <option value="GHC">GHC</option>
+      <option value="GHS">GHS</option>
+      <option value="GIP">GIP</option>
+      <option value="GMD">GMD</option>
+      <option value="GNF">GNF</option>
+      <option value="GRD">GRD</option>
+      <option value="GTQ">GTQ</option>
+      <option value="GYD">GYD</option>
+      <option value="HKD">HKD</option>
+      <option value="HNL">HNL</option>
+      <option value="HRD">HRD</option>
+      <option value="HRK">HRK</option>
+      <option value="HTG">HTG</option>
+      <option value="HUF">HUF</option>
+      <option value="IDR">IDR</option>
+      <option value="IEP">IEP</option>
+      <option value="ILS">ILS</option>
+      <option value="IMP">IMP</option>
+      <option value="INR">INR</option>
+      <option value="IQD">IQD</option>
+      <option value="IRR">IRR</option>
+      <option value="ISK">ISK</option>
+      <option value="ITL">ITL</option>
+      <option value="JEP">JEP</option>
+      <option value="JMD">JMD</option>
+      <option value="JOD">JOD</option>
+      <option value="JPY">JPY</option>
+      <option value="KES">KES</option>
+      <option value="KGS">KGS</option>
+      <option value="KHR">KHR</option>
+      <option value="KMF">KMF</option>
+      <option value="KPW">KPW</option>
+      <option value="KRU">KRU</option>
+      <option value="KRW">KRW</option>
+      <option value="KWD">KWD</option>
+      <option value="KYD">KYD</option>
+      <option value="KZT">KZT</option>
+      <option value="LAK">LAK</option>
+      <option value="LBP">LBP</option>
+      <option value="LKR">LKR</option>
+      <option value="LRD">LRD</option>
+      <option value="LSL">LSL</option>
+      <option value="LTL">LTL</option>
+      <option value="LUF">LUF</option>
+      <option value="LVL">LVL</option>
+      <option value="LYD">LYD</option>
+      <option value="M5P">M5P</option>
+      <option value="MAD">MAD</option>
+      <option value="MAL">MAL</option>
+      <option value="MDL">MDL</option>
+      <option value="MFG">MFG</option>
+      <option value="MGA">MGA</option>
+      <option value="MKD">MKD</option>
+      <option value="MMK">MMK</option>
+      <option value="MNT">MNT</option>
+      <option value="MOP">MOP</option>
+      <option value="MRO">MRO</option>
+      <option value="MRU">MRU</option>
+      <option value="MTL">MTL</option>
+      <option value="MTP">MTP</option>
+      <option value="MUR">MUR</option>
+      <option value="MVR">MVR</option>
+      <option value="MWK">MWK</option>
+      <option value="MXN">MXN</option>
+      <option value="MXP">MXP</option>
+      <option value="MXV">MXV</option>
+      <option value="MYR">MYR</option>
+      <option value="MZM">MZM</option>
+      <option value="MZN">MZN</option>
+      <option value="NAD">NAD</option>
+      <option value="NBL">NBL</option>
+      <option value="NGN">NGN</option>
+      <option value="NIC">NIC</option>
+      <option value="NIO">NIO</option>
+      <option value="NLG">NLG</option>
+      <option value="NOK">NOK</option>
+      <option value="NPR">NPR</option>
+      <option value="NSO">NSO</option>
+      <option value="NZD">NZD</option>
+      <option value="OMR">OMR</option>
+      <option value="OSO">OSO</option>
+      <option value="PAB">PAB</option>
+      <option value="PEI">PEI</option>
+      <option value="PEN">PEN</option>
+      <option value="PES">PES</option>
+      <option value="PGK">PGK</option>
+      <option value="PHP">PHP</option>
+      <option value="PKR">PKR</option>
+      <option value="PLN">PLN</option>
+      <option value="PLZ">PLZ</option>
+      <option value="PTE">PTE</option>
+      <option value="PYG">PYG</option>
+      <option value="QAR">QAR</option>
+      <option value="ROL">ROL</option>
+      <option value="RON">RON</option>
+      <option value="RSD">RSD</option>
+      <option value="RUB">RUB</option>
+      <option value="RUR">RUR</option>
+      <option value="RWF">RWF</option>
+      <option value="SAR">SAR</option>
+      <option value="SBD">SBD</option>
+      <option value="SCR">SCR</option>
+      <option value="SDD">SDD</option>
+      <option value="SDG">SDG</option>
+      <option value="SDP">SDP</option>
+      <option value="SDR">SDR</option>
+      <option value="SEK">SEK</option>
+      <option value="SGD">SGD</option>
+      <option value="SHP">SHP</option>
+      <option value="SIT">SIT</option>
+      <option value="SKK">SKK</option>
+      <option value="SLL">SLL</option>
+      <option value="SOS">SOS</option>
+      <option value="SPL">SPL</option>
+      <option value="SRD">SRD</option>
+      <option value="SRG">SRG</option>
+      <option value="STD">STD</option>
+      <option value="STN">STN</option>
+      <option value="SUR">SUR</option>
+      <option value="SVC">SVC</option>
+      <option value="SYP">SYP</option>
+      <option value="SZL">SZL</option>
+      <option value="THB">THB</option>
+      <option value="TJR">TJR</option>
+      <option value="TJS">TJS</option>
+      <option value="TMM">TMM</option>
+      <option value="TMT">TMT</option>
+      <option value="TND">TND</option>
+      <option value="TOP">TOP</option>
+      <option value="TRL">TRL</option>
+      <option value="TRY">TRY</option>
+      <option value="TTD">TTD</option>
+      <option value="TVD">TVD</option>
+      <option value="TWD">TWD</option>
+      <option value="TZS">TZS</option>
+      <option value="UAH">UAH</option>
+      <option value="UGX">UGX</option>
+      <option value="UNK">UNK</option>
+      <option value="UYP">UYP</option>
+      <option value="UYU">UYU</option>
+      <option value="UZS">UZS</option>
+      <option value="VEB">VEB</option>
+      <option value="VEF">VEF</option>
+      <option value="VES">VES</option>
+      <option value="VND">VND</option>
+      <option value="VRL">VRL</option>
+      <option value="VRN">VRN</option>
+      <option value="VUV">VUV</option>
+      <option value="WST">WST</option>
+      <option value="XAF">XAF</option>
+      <option value="XAG">XAG</option>
+      <option value="XAU">XAU</option>
+      <option value="XCD">XCD</option>
+      <option value="XDR">XDR</option>
+      <option value="XEU">XEU</option>
+      <option value="XOF">XOF</option>
+      <option value="XPD">XPD</option>
+      <option value="XPF">XPF</option>
+      <option value="XPT">XPT</option>
+      <option value="YER">YER</option>
+      <option value="YUD">YUD</option>
+      <option value="YUM">YUM</option>
+      <option value="ZAL">ZAL</option>
+      <option value="ZAR">ZAR</option>
+      <option value="ZMK">ZMK</option>
+      <option value="ZMW">ZMW</option>
+      <option value="ZRN">ZRN</option>
+      <option value="ZRZ">ZRZ</option>
+      <option value="ZWD">ZWD</option>
+      <option value="ZWL">ZWL</option>
+      <option value="BAD">BAD</option>
+      <option value="NOCURRENCY">NOCURRENCY</option>
+    </options>
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRawCrossRateResult" type="CrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRawCrossRates" soapAction="http://www.xignite.com/services/GetRawCrossRates" resultsNode="GetRawCrossRatesResult">
+  <description>Returns a real-time currency cross-rate.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRawCrossRatesResult" type="ArrayOfCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRate" type="CrossRate" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="CrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRealTimeCrossRates" soapAction="http://www.xignite.com/services/GetRealTimeCrossRates" resultsNode="GetRealTimeCrossRatesResult">
+  <description>Returns the latest possible cross rate.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRealTimeCrossRatesResult" type="ArrayOfCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRate" type="CrossRate" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="CrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRateTables" soapAction="http://www.xignite.com/services/GetHistoricalCrossRateTables" resultsNode="GetHistoricalCrossRateTablesResult">
+  <description>Returns historical currency cross-rate tables for a range of dates.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRateTablesResult" type="ArrayOfCrossRateTable" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRateTable" type="CrossRateTable" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="CrossRateTable" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRateTablesBidAsk" soapAction="http://www.xignite.com/services/GetHistoricalCrossRateTablesBidAsk" resultsNode="GetHistoricalCrossRateTablesBidAskResult">
+  <description>Returns historical currency cross-rate tables for a range of dates.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRateTablesBidAskResult" type="ArrayOfCrossRateTableWithBidAsk" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRateTableWithBidAsk" type="CrossRateTableWithBidAsk" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="CrossRateTableWithBidAsk" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCurrencyReport" soapAction="http://www.xignite.com/services/GetCurrencyReport" resultsNode="GetCurrencyReportResult">
+  <description>Returns historical currency cross-rate tables for a range of dates.</description>
+  <parameters>
+   <parameter name="From" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="To" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCurrencyReportResult" type="Report" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="Report" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRateTable" soapAction="http://www.xignite.com/services/GetHistoricalCrossRateTable" resultsNode="GetHistoricalCrossRateTableResult">
+  <description>Returns a historical currency cross-rate table.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRateTableResult" type="CrossRateTable" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRateTable" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRateTableBidAsk" soapAction="http://www.xignite.com/services/GetHistoricalCrossRateTableBidAsk" resultsNode="GetHistoricalCrossRateTableBidAskResult">
+  <description>Returns a historical currency cross-rate table.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRateTableBidAskResult" type="CrossRateTableWithBidAsk" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRateTableWithBidAsk" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRealTimeCrossRateTable" soapAction="http://www.xignite.com/services/GetRealTimeCrossRateTable" resultsNode="GetRealTimeCrossRateTableResult">
+  <description>Returns a real-time currency cross-rate table.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRealTimeCrossRateTableResult" type="CrossRateTable" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRateTable" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRealTimeCrossRateTableWithBidAsk" soapAction="http://www.xignite.com/services/GetRealTimeCrossRateTableWithBidAsk" resultsNode="GetRealTimeCrossRateTableWithBidAskResult">
+  <description>Returns a real-time currency cross-rate table.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRealTimeCrossRateTableWithBidAskResult" type="CrossRateTableWithBidAsk" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRateTableWithBidAsk" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetAllCrossRatesForACurrency" soapAction="http://www.xignite.com/services/GetAllCrossRatesForACurrency" resultsNode="GetAllCrossRatesForACurrencyResult">
+  <description>Returns all valid cross rates for a currency.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetAllCrossRatesForACurrencyResult" type="CrossRateTableLineWithBidAsk" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRateTableLineWithBidAsk" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetRealTimeCrossRateTableAsHTML" soapAction="http://www.xignite.com/services/GetRealTimeCrossRateTableAsHTML" resultsNode="GetRealTimeCrossRateTableAsHTMLResult">
+  <description>Returns a real-time currency cross-rate table as an HTML Output.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="ColumnHeaderStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="LineHeaderStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="CellStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetRealTimeCrossRateTableAsHTMLResult" type="HTMLCrossRateTable" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HTMLCrossRateTable" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetSimpleRealTimeCrossRateTableAsHTML" soapAction="http://www.xignite.com/services/GetSimpleRealTimeCrossRateTableAsHTML" resultsNode="GetSimpleRealTimeCrossRateTableAsHTMLResult">
+  <description>Returns a real-time currency cross-rate table as an HTML Output.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="ColumnHeaderStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="LineHeaderStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="CellStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetSimpleRealTimeCrossRateTableAsHTMLResult" type="HTMLCrossRateTable" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HTMLCrossRateTable" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRateTableAsHTML" soapAction="http://www.xignite.com/services/GetHistoricalCrossRateTableAsHTML" resultsNode="GetHistoricalCrossRateTableAsHTMLResult">
+  <description>Returns a historical currency cross-rate table as an HTML Output.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="ColumnHeaderStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="LineHeaderStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="CellStyle" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRateTableAsHTMLResult" type="HTMLCrossRateTable" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HTMLCrossRateTable" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRate" soapAction="http://www.xignite.com/services/GetHistoricalCrossRate" resultsNode="GetHistoricalCrossRateResult">
+  <description>Returns a cross-rate as of a historical date.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRateResult" type="HistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRates" soapAction="http://www.xignite.com/services/GetHistoricalCrossRates" resultsNode="GetHistoricalCrossRatesResult">
+  <description>Returns multiple cross-rates as of a historical date.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRatesResult" type="ArrayOfHistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HistoricalCrossRate" type="HistoricalCrossRate" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="HistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRateBidAsk" soapAction="http://www.xignite.com/services/GetHistoricalCrossRateBidAsk" resultsNode="GetHistoricalCrossRateBidAskResult">
+  <description>Returns a cross-rate with bid/ask as of a historical date.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRateBidAskResult" type="FullHistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="FullHistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRatesBidAsk" soapAction="http://www.xignite.com/services/GetHistoricalCrossRatesBidAsk" resultsNode="GetHistoricalCrossRatesBidAskResult">
+  <description>Returns multiple cross-rates with bid/ask as of a historical date.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRatesBidAskResult" type="ArrayOfFullHistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="FullHistoricalCrossRate" type="FullHistoricalCrossRate" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="FullHistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRatesRange" soapAction="http://www.xignite.com/services/GetHistoricalCrossRatesRange" resultsNode="GetHistoricalCrossRatesRangeResult">
+  <description>This operation returns a range of cross-rates for a currency pair. </description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRatesRangeResult" type="HistoricalCrossRates" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HistoricalCrossRates" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRatesBidAskRange" soapAction="http://www.xignite.com/services/GetHistoricalCrossRatesBidAskRange" resultsNode="GetHistoricalCrossRatesBidAskRangeResult">
+  <description>This operation returns a range of cross-rates for a currency pair. </description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRatesBidAskRangeResult" type="FullHistoricalCrossRates" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="FullHistoricalCrossRates" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRatesAsOf" soapAction="http://www.xignite.com/services/GetHistoricalCrossRatesAsOf" resultsNode="GetHistoricalCrossRatesAsOfResult">
+  <description>This operation returns a range of cross-rates for a currency pair.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="dateTime" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Day">Day</option>
+      <option value="Week">Week</option>
+      <option value="Month">Month</option>
+      <option value="Quarter">Quarter</option>
+      <option value="Year">Year</option>
+    </options>
+   </parameter>
+   <parameter name="Periods" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRatesAsOfResult" type="HistoricalCrossRates" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HistoricalCrossRates" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalCrossRatesBidAskAsOf" soapAction="http://www.xignite.com/services/GetHistoricalCrossRatesBidAskAsOf" resultsNode="GetHistoricalCrossRatesBidAskAsOfResult">
+  <description>This operation returns a range of cross-rates for a currency pair.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="dateTime" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Day">Day</option>
+      <option value="Week">Week</option>
+      <option value="Month">Month</option>
+      <option value="Quarter">Quarter</option>
+      <option value="Year">Year</option>
+    </options>
+   </parameter>
+   <parameter name="Periods" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalCrossRatesBidAskAsOfResult" type="FullHistoricalCrossRates" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="FullHistoricalCrossRates" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetOfficialCrossRate" soapAction="http://www.xignite.com/services/GetOfficialCrossRate" resultsNode="GetOfficialCrossRateResult">
+  <description>Returns an official cross-rate as of a historical date.</description>
+  <parameters>
+   <parameter name="CountryType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Mexico">Mexico</option>
+      <option value="UnitedStatesAM">UnitedStatesAM</option>
+      <option value="UnitedStatesPM">UnitedStatesPM</option>
+      <option value="Canada">Canada</option>
+      <option value="Europe">Europe</option>
+      <option value="Russia">Russia</option>
+      <option value="Poland">Poland</option>
+      <option value="Romania">Romania</option>
+      <option value="Hungary">Hungary</option>
+      <option value="Chile">Chile</option>
+      <option value="Czech">Czech</option>
+      <option value="Australia">Australia</option>
+      <option value="Brazil">Brazil</option>
+      <option value="Bulgaria">Bulgaria</option>
+      <option value="China">China</option>
+      <option value="Uruguay">Uruguay</option>
+      <option value="UnitedStates">UnitedStates</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Argentina">Argentina</option>
+      <option value="MexicoDoF">MexicoDoF</option>
+      <option value="Serbia">Serbia</option>
+      <option value="Macedonia">Macedonia</option>
+      <option value="Turkey">Turkey</option>
+      <option value="India">India</option>
+      <option value="Philippines">Philippines</option>
+      <option value="EuropeItalyEUR">EuropeItalyEUR</option>
+      <option value="Thailand">Thailand</option>
+      <option value="EuropeItalyUSD">EuropeItalyUSD</option>
+      <option value="UnitedArabEmirates">UnitedArabEmirates</option>
+      <option value="Kazakhstan">Kazakhstan</option>
+      <option value="Peru">Peru</option>
+      <option value="Oman">Oman</option>
+      <option value="DominicanRepublic">DominicanRepublic</option>
+      <option value="Croatia">Croatia</option>
+      <option value="CroatiaEUR">CroatiaEUR</option>
+      <option value="EuropeFranceEUR">EuropeFranceEUR</option>
+      <option value="Ukraine">Ukraine</option>
+      <option value="Tunisia">Tunisia</option>
+      <option value="SouthKorea">SouthKorea</option>
+      <option value="CostaRica">CostaRica</option>
+      <option value="NewZealand">NewZealand</option>
+      <option value="Indonesia">Indonesia</option>
+      <option value="Japan900">Japan900</option>
+      <option value="Japan1700">Japan1700</option>
+      <option value="SouthAfrica">SouthAfrica</option>
+      <option value="Israel">Israel</option>
+      <option value="Norway">Norway</option>
+      <option value="SaudiArabia">SaudiArabia</option>
+      <option value="Denmark">Denmark</option>
+      <option value="Malaysia0900">Malaysia0900</option>
+      <option value="Malaysia1130">Malaysia1130</option>
+      <option value="Malaysia1200">Malaysia1200</option>
+      <option value="Malaysia1700">Malaysia1700</option>
+      <option value="Sweden">Sweden</option>
+      <option value="Morocco">Morocco</option>
+      <option value="PeruSBS">PeruSBS</option>
+    </options>
+   </parameter>
+   <parameter name="Symbol" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="USD">USD</option>
+      <option value="AED">AED</option>
+      <option value="AFA">AFA</option>
+      <option value="AFN">AFN</option>
+      <option value="ALL">ALL</option>
+      <option value="AMD">AMD</option>
+      <option value="ANG">ANG</option>
+      <option value="AOA">AOA</option>
+      <option value="ARA">ARA</option>
+      <option value="ARE">ARE</option>
+      <option value="ARS">ARS</option>
+      <option value="ATS">ATS</option>
+      <option value="AUD">AUD</option>
+      <option value="AUN">AUN</option>
+      <option value="AWG">AWG</option>
+      <option value="AZM">AZM</option>
+      <option value="AZN">AZN</option>
+      <option value="BAM">BAM</option>
+      <option value="BBD">BBD</option>
+      <option value="BDT">BDT</option>
+      <option value="BEF">BEF</option>
+      <option value="BEL">BEL</option>
+      <option value="BGL">BGL</option>
+      <option value="BGN">BGN</option>
+      <option value="BHD">BHD</option>
+      <option value="BIF">BIF</option>
+      <option value="BMD">BMD</option>
+      <option value="BND">BND</option>
+      <option value="BOB">BOB</option>
+      <option value="BOV">BOV</option>
+      <option value="BRC">BRC</option>
+      <option value="BRE">BRE</option>
+      <option value="BRI">BRI</option>
+      <option value="BRL">BRL</option>
+      <option value="BRR">BRR</option>
+      <option value="BSD">BSD</option>
+      <option value="BTN">BTN</option>
+      <option value="BWP">BWP</option>
+      <option value="BYN">BYN</option>
+      <option value="BYR">BYR</option>
+      <option value="BZD">BZD</option>
+      <option value="CAD">CAD</option>
+      <option value="CDF">CDF</option>
+      <option value="CHF">CHF</option>
+      <option value="CLF">CLF</option>
+      <option value="CHK">CHK</option>
+      <option value="CLP">CLP</option>
+      <option value="CNY">CNY</option>
+      <option value="CNH">CNH</option>
+      <option value="COP">COP</option>
+      <option value="CRC">CRC</option>
+      <option value="CSD">CSD</option>
+      <option value="CUP">CUP</option>
+      <option value="CVE">CVE</option>
+      <option value="CYP">CYP</option>
+      <option value="CZK">CZK</option>
+      <option value="DEM">DEM</option>
+      <option value="DJF">DJF</option>
+      <option value="DKK">DKK</option>
+      <option value="DOP">DOP</option>
+      <option value="DOE">DOE</option>
+      <option value="DOW">DOW</option>
+      <option value="DZD">DZD</option>
+      <option value="ECS">ECS</option>
+      <option value="EEK">EEK</option>
+      <option value="EGP">EGP</option>
+      <option value="ERN">ERN</option>
+      <option value="ESP">ESP</option>
+      <option value="ETB">ETB</option>
+      <option value="EUR">EUR</option>
+      <option value="FIM">FIM</option>
+      <option value="FJD">FJD</option>
+      <option value="FKP">FKP</option>
+      <option value="FRF">FRF</option>
+      <option value="FRN">FRN</option>
+      <option value="GBP">GBP</option>
+      <option value="GEL">GEL</option>
+      <option value="GGP">GGP</option>
+      <option value="GHC">GHC</option>
+      <option value="GHS">GHS</option>
+      <option value="GIP">GIP</option>
+      <option value="GMD">GMD</option>
+      <option value="GNF">GNF</option>
+      <option value="GRD">GRD</option>
+      <option value="GTQ">GTQ</option>
+      <option value="GYD">GYD</option>
+      <option value="HKD">HKD</option>
+      <option value="HNL">HNL</option>
+      <option value="HRD">HRD</option>
+      <option value="HRK">HRK</option>
+      <option value="HTG">HTG</option>
+      <option value="HUF">HUF</option>
+      <option value="IDR">IDR</option>
+      <option value="IEP">IEP</option>
+      <option value="ILS">ILS</option>
+      <option value="IMP">IMP</option>
+      <option value="INR">INR</option>
+      <option value="IQD">IQD</option>
+      <option value="IRR">IRR</option>
+      <option value="ISK">ISK</option>
+      <option value="ITL">ITL</option>
+      <option value="JEP">JEP</option>
+      <option value="JMD">JMD</option>
+      <option value="JOD">JOD</option>
+      <option value="JPY">JPY</option>
+      <option value="KES">KES</option>
+      <option value="KGS">KGS</option>
+      <option value="KHR">KHR</option>
+      <option value="KMF">KMF</option>
+      <option value="KPW">KPW</option>
+      <option value="KRU">KRU</option>
+      <option value="KRW">KRW</option>
+      <option value="KWD">KWD</option>
+      <option value="KYD">KYD</option>
+      <option value="KZT">KZT</option>
+      <option value="LAK">LAK</option>
+      <option value="LBP">LBP</option>
+      <option value="LKR">LKR</option>
+      <option value="LRD">LRD</option>
+      <option value="LSL">LSL</option>
+      <option value="LTL">LTL</option>
+      <option value="LUF">LUF</option>
+      <option value="LVL">LVL</option>
+      <option value="LYD">LYD</option>
+      <option value="M5P">M5P</option>
+      <option value="MAD">MAD</option>
+      <option value="MAL">MAL</option>
+      <option value="MDL">MDL</option>
+      <option value="MFG">MFG</option>
+      <option value="MGA">MGA</option>
+      <option value="MKD">MKD</option>
+      <option value="MMK">MMK</option>
+      <option value="MNT">MNT</option>
+      <option value="MOP">MOP</option>
+      <option value="MRO">MRO</option>
+      <option value="MRU">MRU</option>
+      <option value="MTL">MTL</option>
+      <option value="MTP">MTP</option>
+      <option value="MUR">MUR</option>
+      <option value="MVR">MVR</option>
+      <option value="MWK">MWK</option>
+      <option value="MXN">MXN</option>
+      <option value="MXP">MXP</option>
+      <option value="MXV">MXV</option>
+      <option value="MYR">MYR</option>
+      <option value="MZM">MZM</option>
+      <option value="MZN">MZN</option>
+      <option value="NAD">NAD</option>
+      <option value="NBL">NBL</option>
+      <option value="NGN">NGN</option>
+      <option value="NIC">NIC</option>
+      <option value="NIO">NIO</option>
+      <option value="NLG">NLG</option>
+      <option value="NOK">NOK</option>
+      <option value="NPR">NPR</option>
+      <option value="NSO">NSO</option>
+      <option value="NZD">NZD</option>
+      <option value="OMR">OMR</option>
+      <option value="OSO">OSO</option>
+      <option value="PAB">PAB</option>
+      <option value="PEI">PEI</option>
+      <option value="PEN">PEN</option>
+      <option value="PES">PES</option>
+      <option value="PGK">PGK</option>
+      <option value="PHP">PHP</option>
+      <option value="PKR">PKR</option>
+      <option value="PLN">PLN</option>
+      <option value="PLZ">PLZ</option>
+      <option value="PTE">PTE</option>
+      <option value="PYG">PYG</option>
+      <option value="QAR">QAR</option>
+      <option value="ROL">ROL</option>
+      <option value="RON">RON</option>
+      <option value="RSD">RSD</option>
+      <option value="RUB">RUB</option>
+      <option value="RUR">RUR</option>
+      <option value="RWF">RWF</option>
+      <option value="SAR">SAR</option>
+      <option value="SBD">SBD</option>
+      <option value="SCR">SCR</option>
+      <option value="SDD">SDD</option>
+      <option value="SDG">SDG</option>
+      <option value="SDP">SDP</option>
+      <option value="SDR">SDR</option>
+      <option value="SEK">SEK</option>
+      <option value="SGD">SGD</option>
+      <option value="SHP">SHP</option>
+      <option value="SIT">SIT</option>
+      <option value="SKK">SKK</option>
+      <option value="SLL">SLL</option>
+      <option value="SOS">SOS</option>
+      <option value="SPL">SPL</option>
+      <option value="SRD">SRD</option>
+      <option value="SRG">SRG</option>
+      <option value="STD">STD</option>
+      <option value="STN">STN</option>
+      <option value="SUR">SUR</option>
+      <option value="SVC">SVC</option>
+      <option value="SYP">SYP</option>
+      <option value="SZL">SZL</option>
+      <option value="THB">THB</option>
+      <option value="TJR">TJR</option>
+      <option value="TJS">TJS</option>
+      <option value="TMM">TMM</option>
+      <option value="TMT">TMT</option>
+      <option value="TND">TND</option>
+      <option value="TOP">TOP</option>
+      <option value="TRL">TRL</option>
+      <option value="TRY">TRY</option>
+      <option value="TTD">TTD</option>
+      <option value="TVD">TVD</option>
+      <option value="TWD">TWD</option>
+      <option value="TZS">TZS</option>
+      <option value="UAH">UAH</option>
+      <option value="UGX">UGX</option>
+      <option value="UNK">UNK</option>
+      <option value="UYP">UYP</option>
+      <option value="UYU">UYU</option>
+      <option value="UZS">UZS</option>
+      <option value="VEB">VEB</option>
+      <option value="VEF">VEF</option>
+      <option value="VES">VES</option>
+      <option value="VND">VND</option>
+      <option value="VRL">VRL</option>
+      <option value="VRN">VRN</option>
+      <option value="VUV">VUV</option>
+      <option value="WST">WST</option>
+      <option value="XAF">XAF</option>
+      <option value="XAG">XAG</option>
+      <option value="XAU">XAU</option>
+      <option value="XCD">XCD</option>
+      <option value="XDR">XDR</option>
+      <option value="XEU">XEU</option>
+      <option value="XOF">XOF</option>
+      <option value="XPD">XPD</option>
+      <option value="XPF">XPF</option>
+      <option value="XPT">XPT</option>
+      <option value="YER">YER</option>
+      <option value="YUD">YUD</option>
+      <option value="YUM">YUM</option>
+      <option value="ZAL">ZAL</option>
+      <option value="ZAR">ZAR</option>
+      <option value="ZMK">ZMK</option>
+      <option value="ZMW">ZMW</option>
+      <option value="ZRN">ZRN</option>
+      <option value="ZRZ">ZRZ</option>
+      <option value="ZWD">ZWD</option>
+      <option value="ZWL">ZWL</option>
+      <option value="BAD">BAD</option>
+      <option value="NOCURRENCY">NOCURRENCY</option>
+    </options>
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetOfficialCrossRateResult" type="HistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetOfficialCrossRates" soapAction="http://www.xignite.com/services/GetOfficialCrossRates" resultsNode="GetOfficialCrossRatesResult">
+  <description>Returns an official cross-rate as of a historical date.</description>
+  <parameters>
+   <parameter name="CountryType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Mexico">Mexico</option>
+      <option value="UnitedStatesAM">UnitedStatesAM</option>
+      <option value="UnitedStatesPM">UnitedStatesPM</option>
+      <option value="Canada">Canada</option>
+      <option value="Europe">Europe</option>
+      <option value="Russia">Russia</option>
+      <option value="Poland">Poland</option>
+      <option value="Romania">Romania</option>
+      <option value="Hungary">Hungary</option>
+      <option value="Chile">Chile</option>
+      <option value="Czech">Czech</option>
+      <option value="Australia">Australia</option>
+      <option value="Brazil">Brazil</option>
+      <option value="Bulgaria">Bulgaria</option>
+      <option value="China">China</option>
+      <option value="Uruguay">Uruguay</option>
+      <option value="UnitedStates">UnitedStates</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Argentina">Argentina</option>
+      <option value="MexicoDoF">MexicoDoF</option>
+      <option value="Serbia">Serbia</option>
+      <option value="Macedonia">Macedonia</option>
+      <option value="Turkey">Turkey</option>
+      <option value="India">India</option>
+      <option value="Philippines">Philippines</option>
+      <option value="EuropeItalyEUR">EuropeItalyEUR</option>
+      <option value="Thailand">Thailand</option>
+      <option value="EuropeItalyUSD">EuropeItalyUSD</option>
+      <option value="UnitedArabEmirates">UnitedArabEmirates</option>
+      <option value="Kazakhstan">Kazakhstan</option>
+      <option value="Peru">Peru</option>
+      <option value="Oman">Oman</option>
+      <option value="DominicanRepublic">DominicanRepublic</option>
+      <option value="Croatia">Croatia</option>
+      <option value="CroatiaEUR">CroatiaEUR</option>
+      <option value="EuropeFranceEUR">EuropeFranceEUR</option>
+      <option value="Ukraine">Ukraine</option>
+      <option value="Tunisia">Tunisia</option>
+      <option value="SouthKorea">SouthKorea</option>
+      <option value="CostaRica">CostaRica</option>
+      <option value="NewZealand">NewZealand</option>
+      <option value="Indonesia">Indonesia</option>
+      <option value="Japan900">Japan900</option>
+      <option value="Japan1700">Japan1700</option>
+      <option value="SouthAfrica">SouthAfrica</option>
+      <option value="Israel">Israel</option>
+      <option value="Norway">Norway</option>
+      <option value="SaudiArabia">SaudiArabia</option>
+      <option value="Denmark">Denmark</option>
+      <option value="Malaysia0900">Malaysia0900</option>
+      <option value="Malaysia1130">Malaysia1130</option>
+      <option value="Malaysia1200">Malaysia1200</option>
+      <option value="Malaysia1700">Malaysia1700</option>
+      <option value="Sweden">Sweden</option>
+      <option value="Morocco">Morocco</option>
+      <option value="PeruSBS">PeruSBS</option>
+    </options>
+   </parameter>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetOfficialCrossRatesResult" type="ArrayOfHistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HistoricalCrossRate" type="HistoricalCrossRate" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="HistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetOfficialCrossRateBidAsk" soapAction="http://www.xignite.com/services/GetOfficialCrossRateBidAsk" resultsNode="GetOfficialCrossRateBidAskResult">
+  <description>Returns an official cross-rate as of a historical date.</description>
+  <parameters>
+   <parameter name="CountryType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Mexico">Mexico</option>
+      <option value="UnitedStatesAM">UnitedStatesAM</option>
+      <option value="UnitedStatesPM">UnitedStatesPM</option>
+      <option value="Canada">Canada</option>
+      <option value="Europe">Europe</option>
+      <option value="Russia">Russia</option>
+      <option value="Poland">Poland</option>
+      <option value="Romania">Romania</option>
+      <option value="Hungary">Hungary</option>
+      <option value="Chile">Chile</option>
+      <option value="Czech">Czech</option>
+      <option value="Australia">Australia</option>
+      <option value="Brazil">Brazil</option>
+      <option value="Bulgaria">Bulgaria</option>
+      <option value="China">China</option>
+      <option value="Uruguay">Uruguay</option>
+      <option value="UnitedStates">UnitedStates</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Argentina">Argentina</option>
+      <option value="MexicoDoF">MexicoDoF</option>
+      <option value="Serbia">Serbia</option>
+      <option value="Macedonia">Macedonia</option>
+      <option value="Turkey">Turkey</option>
+      <option value="India">India</option>
+      <option value="Philippines">Philippines</option>
+      <option value="EuropeItalyEUR">EuropeItalyEUR</option>
+      <option value="Thailand">Thailand</option>
+      <option value="EuropeItalyUSD">EuropeItalyUSD</option>
+      <option value="UnitedArabEmirates">UnitedArabEmirates</option>
+      <option value="Kazakhstan">Kazakhstan</option>
+      <option value="Peru">Peru</option>
+      <option value="Oman">Oman</option>
+      <option value="DominicanRepublic">DominicanRepublic</option>
+      <option value="Croatia">Croatia</option>
+      <option value="CroatiaEUR">CroatiaEUR</option>
+      <option value="EuropeFranceEUR">EuropeFranceEUR</option>
+      <option value="Ukraine">Ukraine</option>
+      <option value="Tunisia">Tunisia</option>
+      <option value="SouthKorea">SouthKorea</option>
+      <option value="CostaRica">CostaRica</option>
+      <option value="NewZealand">NewZealand</option>
+      <option value="Indonesia">Indonesia</option>
+      <option value="Japan900">Japan900</option>
+      <option value="Japan1700">Japan1700</option>
+      <option value="SouthAfrica">SouthAfrica</option>
+      <option value="Israel">Israel</option>
+      <option value="Norway">Norway</option>
+      <option value="SaudiArabia">SaudiArabia</option>
+      <option value="Denmark">Denmark</option>
+      <option value="Malaysia0900">Malaysia0900</option>
+      <option value="Malaysia1130">Malaysia1130</option>
+      <option value="Malaysia1200">Malaysia1200</option>
+      <option value="Malaysia1700">Malaysia1700</option>
+      <option value="Sweden">Sweden</option>
+      <option value="Morocco">Morocco</option>
+      <option value="PeruSBS">PeruSBS</option>
+    </options>
+   </parameter>
+   <parameter name="Symbol" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="USD">USD</option>
+      <option value="AED">AED</option>
+      <option value="AFA">AFA</option>
+      <option value="AFN">AFN</option>
+      <option value="ALL">ALL</option>
+      <option value="AMD">AMD</option>
+      <option value="ANG">ANG</option>
+      <option value="AOA">AOA</option>
+      <option value="ARA">ARA</option>
+      <option value="ARE">ARE</option>
+      <option value="ARS">ARS</option>
+      <option value="ATS">ATS</option>
+      <option value="AUD">AUD</option>
+      <option value="AUN">AUN</option>
+      <option value="AWG">AWG</option>
+      <option value="AZM">AZM</option>
+      <option value="AZN">AZN</option>
+      <option value="BAM">BAM</option>
+      <option value="BBD">BBD</option>
+      <option value="BDT">BDT</option>
+      <option value="BEF">BEF</option>
+      <option value="BEL">BEL</option>
+      <option value="BGL">BGL</option>
+      <option value="BGN">BGN</option>
+      <option value="BHD">BHD</option>
+      <option value="BIF">BIF</option>
+      <option value="BMD">BMD</option>
+      <option value="BND">BND</option>
+      <option value="BOB">BOB</option>
+      <option value="BOV">BOV</option>
+      <option value="BRC">BRC</option>
+      <option value="BRE">BRE</option>
+      <option value="BRI">BRI</option>
+      <option value="BRL">BRL</option>
+      <option value="BRR">BRR</option>
+      <option value="BSD">BSD</option>
+      <option value="BTN">BTN</option>
+      <option value="BWP">BWP</option>
+      <option value="BYN">BYN</option>
+      <option value="BYR">BYR</option>
+      <option value="BZD">BZD</option>
+      <option value="CAD">CAD</option>
+      <option value="CDF">CDF</option>
+      <option value="CHF">CHF</option>
+      <option value="CLF">CLF</option>
+      <option value="CHK">CHK</option>
+      <option value="CLP">CLP</option>
+      <option value="CNY">CNY</option>
+      <option value="CNH">CNH</option>
+      <option value="COP">COP</option>
+      <option value="CRC">CRC</option>
+      <option value="CSD">CSD</option>
+      <option value="CUP">CUP</option>
+      <option value="CVE">CVE</option>
+      <option value="CYP">CYP</option>
+      <option value="CZK">CZK</option>
+      <option value="DEM">DEM</option>
+      <option value="DJF">DJF</option>
+      <option value="DKK">DKK</option>
+      <option value="DOP">DOP</option>
+      <option value="DOE">DOE</option>
+      <option value="DOW">DOW</option>
+      <option value="DZD">DZD</option>
+      <option value="ECS">ECS</option>
+      <option value="EEK">EEK</option>
+      <option value="EGP">EGP</option>
+      <option value="ERN">ERN</option>
+      <option value="ESP">ESP</option>
+      <option value="ETB">ETB</option>
+      <option value="EUR">EUR</option>
+      <option value="FIM">FIM</option>
+      <option value="FJD">FJD</option>
+      <option value="FKP">FKP</option>
+      <option value="FRF">FRF</option>
+      <option value="FRN">FRN</option>
+      <option value="GBP">GBP</option>
+      <option value="GEL">GEL</option>
+      <option value="GGP">GGP</option>
+      <option value="GHC">GHC</option>
+      <option value="GHS">GHS</option>
+      <option value="GIP">GIP</option>
+      <option value="GMD">GMD</option>
+      <option value="GNF">GNF</option>
+      <option value="GRD">GRD</option>
+      <option value="GTQ">GTQ</option>
+      <option value="GYD">GYD</option>
+      <option value="HKD">HKD</option>
+      <option value="HNL">HNL</option>
+      <option value="HRD">HRD</option>
+      <option value="HRK">HRK</option>
+      <option value="HTG">HTG</option>
+      <option value="HUF">HUF</option>
+      <option value="IDR">IDR</option>
+      <option value="IEP">IEP</option>
+      <option value="ILS">ILS</option>
+      <option value="IMP">IMP</option>
+      <option value="INR">INR</option>
+      <option value="IQD">IQD</option>
+      <option value="IRR">IRR</option>
+      <option value="ISK">ISK</option>
+      <option value="ITL">ITL</option>
+      <option value="JEP">JEP</option>
+      <option value="JMD">JMD</option>
+      <option value="JOD">JOD</option>
+      <option value="JPY">JPY</option>
+      <option value="KES">KES</option>
+      <option value="KGS">KGS</option>
+      <option value="KHR">KHR</option>
+      <option value="KMF">KMF</option>
+      <option value="KPW">KPW</option>
+      <option value="KRU">KRU</option>
+      <option value="KRW">KRW</option>
+      <option value="KWD">KWD</option>
+      <option value="KYD">KYD</option>
+      <option value="KZT">KZT</option>
+      <option value="LAK">LAK</option>
+      <option value="LBP">LBP</option>
+      <option value="LKR">LKR</option>
+      <option value="LRD">LRD</option>
+      <option value="LSL">LSL</option>
+      <option value="LTL">LTL</option>
+      <option value="LUF">LUF</option>
+      <option value="LVL">LVL</option>
+      <option value="LYD">LYD</option>
+      <option value="M5P">M5P</option>
+      <option value="MAD">MAD</option>
+      <option value="MAL">MAL</option>
+      <option value="MDL">MDL</option>
+      <option value="MFG">MFG</option>
+      <option value="MGA">MGA</option>
+      <option value="MKD">MKD</option>
+      <option value="MMK">MMK</option>
+      <option value="MNT">MNT</option>
+      <option value="MOP">MOP</option>
+      <option value="MRO">MRO</option>
+      <option value="MRU">MRU</option>
+      <option value="MTL">MTL</option>
+      <option value="MTP">MTP</option>
+      <option value="MUR">MUR</option>
+      <option value="MVR">MVR</option>
+      <option value="MWK">MWK</option>
+      <option value="MXN">MXN</option>
+      <option value="MXP">MXP</option>
+      <option value="MXV">MXV</option>
+      <option value="MYR">MYR</option>
+      <option value="MZM">MZM</option>
+      <option value="MZN">MZN</option>
+      <option value="NAD">NAD</option>
+      <option value="NBL">NBL</option>
+      <option value="NGN">NGN</option>
+      <option value="NIC">NIC</option>
+      <option value="NIO">NIO</option>
+      <option value="NLG">NLG</option>
+      <option value="NOK">NOK</option>
+      <option value="NPR">NPR</option>
+      <option value="NSO">NSO</option>
+      <option value="NZD">NZD</option>
+      <option value="OMR">OMR</option>
+      <option value="OSO">OSO</option>
+      <option value="PAB">PAB</option>
+      <option value="PEI">PEI</option>
+      <option value="PEN">PEN</option>
+      <option value="PES">PES</option>
+      <option value="PGK">PGK</option>
+      <option value="PHP">PHP</option>
+      <option value="PKR">PKR</option>
+      <option value="PLN">PLN</option>
+      <option value="PLZ">PLZ</option>
+      <option value="PTE">PTE</option>
+      <option value="PYG">PYG</option>
+      <option value="QAR">QAR</option>
+      <option value="ROL">ROL</option>
+      <option value="RON">RON</option>
+      <option value="RSD">RSD</option>
+      <option value="RUB">RUB</option>
+      <option value="RUR">RUR</option>
+      <option value="RWF">RWF</option>
+      <option value="SAR">SAR</option>
+      <option value="SBD">SBD</option>
+      <option value="SCR">SCR</option>
+      <option value="SDD">SDD</option>
+      <option value="SDG">SDG</option>
+      <option value="SDP">SDP</option>
+      <option value="SDR">SDR</option>
+      <option value="SEK">SEK</option>
+      <option value="SGD">SGD</option>
+      <option value="SHP">SHP</option>
+      <option value="SIT">SIT</option>
+      <option value="SKK">SKK</option>
+      <option value="SLL">SLL</option>
+      <option value="SOS">SOS</option>
+      <option value="SPL">SPL</option>
+      <option value="SRD">SRD</option>
+      <option value="SRG">SRG</option>
+      <option value="STD">STD</option>
+      <option value="STN">STN</option>
+      <option value="SUR">SUR</option>
+      <option value="SVC">SVC</option>
+      <option value="SYP">SYP</option>
+      <option value="SZL">SZL</option>
+      <option value="THB">THB</option>
+      <option value="TJR">TJR</option>
+      <option value="TJS">TJS</option>
+      <option value="TMM">TMM</option>
+      <option value="TMT">TMT</option>
+      <option value="TND">TND</option>
+      <option value="TOP">TOP</option>
+      <option value="TRL">TRL</option>
+      <option value="TRY">TRY</option>
+      <option value="TTD">TTD</option>
+      <option value="TVD">TVD</option>
+      <option value="TWD">TWD</option>
+      <option value="TZS">TZS</option>
+      <option value="UAH">UAH</option>
+      <option value="UGX">UGX</option>
+      <option value="UNK">UNK</option>
+      <option value="UYP">UYP</option>
+      <option value="UYU">UYU</option>
+      <option value="UZS">UZS</option>
+      <option value="VEB">VEB</option>
+      <option value="VEF">VEF</option>
+      <option value="VES">VES</option>
+      <option value="VND">VND</option>
+      <option value="VRL">VRL</option>
+      <option value="VRN">VRN</option>
+      <option value="VUV">VUV</option>
+      <option value="WST">WST</option>
+      <option value="XAF">XAF</option>
+      <option value="XAG">XAG</option>
+      <option value="XAU">XAU</option>
+      <option value="XCD">XCD</option>
+      <option value="XDR">XDR</option>
+      <option value="XEU">XEU</option>
+      <option value="XOF">XOF</option>
+      <option value="XPD">XPD</option>
+      <option value="XPF">XPF</option>
+      <option value="XPT">XPT</option>
+      <option value="YER">YER</option>
+      <option value="YUD">YUD</option>
+      <option value="YUM">YUM</option>
+      <option value="ZAL">ZAL</option>
+      <option value="ZAR">ZAR</option>
+      <option value="ZMK">ZMK</option>
+      <option value="ZMW">ZMW</option>
+      <option value="ZRN">ZRN</option>
+      <option value="ZRZ">ZRZ</option>
+      <option value="ZWD">ZWD</option>
+      <option value="ZWL">ZWL</option>
+      <option value="BAD">BAD</option>
+      <option value="NOCURRENCY">NOCURRENCY</option>
+    </options>
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetOfficialCrossRateBidAskResult" type="FullHistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="FullHistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetOfficialCrossRatesBidAsk" soapAction="http://www.xignite.com/services/GetOfficialCrossRatesBidAsk" resultsNode="GetOfficialCrossRatesBidAskResult">
+  <description>Returns an official cross-rate as of a historical date.</description>
+  <parameters>
+   <parameter name="CountryType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Mexico">Mexico</option>
+      <option value="UnitedStatesAM">UnitedStatesAM</option>
+      <option value="UnitedStatesPM">UnitedStatesPM</option>
+      <option value="Canada">Canada</option>
+      <option value="Europe">Europe</option>
+      <option value="Russia">Russia</option>
+      <option value="Poland">Poland</option>
+      <option value="Romania">Romania</option>
+      <option value="Hungary">Hungary</option>
+      <option value="Chile">Chile</option>
+      <option value="Czech">Czech</option>
+      <option value="Australia">Australia</option>
+      <option value="Brazil">Brazil</option>
+      <option value="Bulgaria">Bulgaria</option>
+      <option value="China">China</option>
+      <option value="Uruguay">Uruguay</option>
+      <option value="UnitedStates">UnitedStates</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Argentina">Argentina</option>
+      <option value="MexicoDoF">MexicoDoF</option>
+      <option value="Serbia">Serbia</option>
+      <option value="Macedonia">Macedonia</option>
+      <option value="Turkey">Turkey</option>
+      <option value="India">India</option>
+      <option value="Philippines">Philippines</option>
+      <option value="EuropeItalyEUR">EuropeItalyEUR</option>
+      <option value="Thailand">Thailand</option>
+      <option value="EuropeItalyUSD">EuropeItalyUSD</option>
+      <option value="UnitedArabEmirates">UnitedArabEmirates</option>
+      <option value="Kazakhstan">Kazakhstan</option>
+      <option value="Peru">Peru</option>
+      <option value="Oman">Oman</option>
+      <option value="DominicanRepublic">DominicanRepublic</option>
+      <option value="Croatia">Croatia</option>
+      <option value="CroatiaEUR">CroatiaEUR</option>
+      <option value="EuropeFranceEUR">EuropeFranceEUR</option>
+      <option value="Ukraine">Ukraine</option>
+      <option value="Tunisia">Tunisia</option>
+      <option value="SouthKorea">SouthKorea</option>
+      <option value="CostaRica">CostaRica</option>
+      <option value="NewZealand">NewZealand</option>
+      <option value="Indonesia">Indonesia</option>
+      <option value="Japan900">Japan900</option>
+      <option value="Japan1700">Japan1700</option>
+      <option value="SouthAfrica">SouthAfrica</option>
+      <option value="Israel">Israel</option>
+      <option value="Norway">Norway</option>
+      <option value="SaudiArabia">SaudiArabia</option>
+      <option value="Denmark">Denmark</option>
+      <option value="Malaysia0900">Malaysia0900</option>
+      <option value="Malaysia1130">Malaysia1130</option>
+      <option value="Malaysia1200">Malaysia1200</option>
+      <option value="Malaysia1700">Malaysia1700</option>
+      <option value="Sweden">Sweden</option>
+      <option value="Morocco">Morocco</option>
+      <option value="PeruSBS">PeruSBS</option>
+    </options>
+   </parameter>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetOfficialCrossRatesBidAskResult" type="ArrayOfFullHistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="FullHistoricalCrossRate" type="FullHistoricalCrossRate" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="FullHistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetMutipleHistoricalCrossRates" soapAction="http://www.xignite.com/services/GetMutipleHistoricalCrossRates" resultsNode="GetMutipleHistoricalCrossRatesResult">
+  <description>Returns multiple cross-rates as of a historical date.</description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetMutipleHistoricalCrossRatesResult" type="MultipleHistoricalCrossRates" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="MultipleHistoricalCrossRates" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetAverageHistoricalCrossRates" soapAction="http://www.xignite.com/services/GetAverageHistoricalCrossRates" resultsNode="GetAverageHistoricalCrossRatesResult">
+  <description>This operation returns an array average daily historical cross-rates for a period. </description>
+  <parameters>
+   <parameter name="Symbols" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetAverageHistoricalCrossRatesResult" type="ArrayOfAverageHistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="AverageHistoricalCrossRate" type="AverageHistoricalCrossRate" minOccurs="0" maxOccurs="unbounded" isattribute="false" iscomplex="true" isnillable="true">
+   <parameter name="AverageHistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetAverageHistoricalCrossRate" soapAction="http://www.xignite.com/services/GetAverageHistoricalCrossRate" resultsNode="GetAverageHistoricalCrossRateResult">
+  <description>This operation returns an average daily historical cross-rates for a period. </description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetAverageHistoricalCrossRateResult" type="AverageHistoricalCrossRate" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="AverageHistoricalCrossRate" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalMonthlyCrossRatesRange" soapAction="http://www.xignite.com/services/GetHistoricalMonthlyCrossRatesRange" resultsNode="GetHistoricalMonthlyCrossRatesRangeResult">
+  <description>This operation returns a complete range of stock quotes for a currency pair.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalMonthlyCrossRatesRangeResult" type="FullHistoricalCrossRates" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="FullHistoricalCrossRates" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCrossRateChange" soapAction="http://www.xignite.com/services/GetCrossRateChange" resultsNode="GetCrossRateChangeResult">
+  <description>This operation returns the changes in a cross-rates over the last 6 months. </description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCrossRateChangeResult" type="CrossRateChange" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CrossRateChange" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCurrencyChartCustom" soapAction="http://www.xignite.com/services/GetCurrencyChartCustom" resultsNode="GetCurrencyChartCustomResult">
+  <description>Draw a custom currency chart for a date range.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Daily">Daily</option>
+    </options>
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Style" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Line">Line</option>
+      <option value="Candle">Candle</option>
+      <option value="Stick">Stick</option>
+      <option value="Area">Area</option>
+      <option value="Percentage">Percentage</option>
+      <option value="LinePercentage">LinePercentage</option>
+      <option value="CandlePercentage">CandlePercentage</option>
+      <option value="StickPercentage">StickPercentage</option>
+      <option value="AreaPercentage">AreaPercentage</option>
+    </options>
+   </parameter>
+   <parameter name="Width" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Height" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Design" type="ChartDesign" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ChartDesign" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCurrencyChartCustomResult" type="HistoricalChart" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HistoricalChart" type="StockChart" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCurrencyChartCustomBinary" soapAction="http://www.xignite.com/services/GetCurrencyChartCustomBinary" resultsNode="GetCurrencyChartCustomBinaryResult">
+  <description>Draw a custom currency chart for a date range.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Daily">Daily</option>
+    </options>
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Style" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Line">Line</option>
+      <option value="Candle">Candle</option>
+      <option value="Stick">Stick</option>
+      <option value="Area">Area</option>
+      <option value="Percentage">Percentage</option>
+      <option value="LinePercentage">LinePercentage</option>
+      <option value="CandlePercentage">CandlePercentage</option>
+      <option value="StickPercentage">StickPercentage</option>
+      <option value="AreaPercentage">AreaPercentage</option>
+    </options>
+   </parameter>
+   <parameter name="Width" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Height" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Design" type="ChartDesign" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ChartDesign" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCurrencyChartCustomBinaryResult" type="ChartBinary" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ChartBinary" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCurrencyChart" soapAction="http://www.xignite.com/services/GetCurrencyChart" resultsNode="GetCurrencyChartResult">
+  <description>Draw a historical currency chart for a date range.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Daily">Daily</option>
+    </options>
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Style" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Line">Line</option>
+      <option value="Candle">Candle</option>
+      <option value="Stick">Stick</option>
+      <option value="Area">Area</option>
+      <option value="Percentage">Percentage</option>
+      <option value="LinePercentage">LinePercentage</option>
+      <option value="CandlePercentage">CandlePercentage</option>
+      <option value="StickPercentage">StickPercentage</option>
+      <option value="AreaPercentage">AreaPercentage</option>
+    </options>
+   </parameter>
+   <parameter name="Width" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Height" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Preset" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCurrencyChartResult" type="HistoricalChart" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HistoricalChart" type="StockChart" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCurrencyChartBinary" soapAction="http://www.xignite.com/services/GetCurrencyChartBinary" resultsNode="GetCurrencyChartBinaryResult">
+  <description>Draw a historical currency chart for a date range in binary format.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Daily">Daily</option>
+    </options>
+   </parameter>
+   <parameter name="StartDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Style" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Line">Line</option>
+      <option value="Candle">Candle</option>
+      <option value="Stick">Stick</option>
+      <option value="Area">Area</option>
+      <option value="Percentage">Percentage</option>
+      <option value="LinePercentage">LinePercentage</option>
+      <option value="CandlePercentage">CandlePercentage</option>
+      <option value="StickPercentage">StickPercentage</option>
+      <option value="AreaPercentage">AreaPercentage</option>
+    </options>
+   </parameter>
+   <parameter name="Width" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Height" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Preset" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCurrencyChartBinaryResult" type="ChartBinary" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ChartBinary" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCurrencyIntradayChart" soapAction="http://www.xignite.com/services/GetCurrencyIntradayChart" resultsNode="GetCurrencyIntradayChartResult">
+  <description>Draw a intraday currency chart for a time range</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="TimeZone" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Style" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Line">Line</option>
+      <option value="Candle">Candle</option>
+      <option value="Stick">Stick</option>
+      <option value="Area">Area</option>
+      <option value="Percentage">Percentage</option>
+      <option value="LinePercentage">LinePercentage</option>
+      <option value="CandlePercentage">CandlePercentage</option>
+      <option value="StickPercentage">StickPercentage</option>
+      <option value="AreaPercentage">AreaPercentage</option>
+    </options>
+   </parameter>
+   <parameter name="Width" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Height" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="TickPeriods" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Preset" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCurrencyIntradayChartResult" type="CurrencyChartIntraday" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CurrencyChartIntraday" type="StockChart" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCurrencyIntradayChartCustomBinary" soapAction="http://www.xignite.com/services/GetCurrencyIntradayChartCustomBinary" resultsNode="GetCurrencyIntradayChartCustomBinaryResult">
+  <description>Draw a intraday currency chart for a time range in a binary format</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="TimeZone" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Style" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Line">Line</option>
+      <option value="Candle">Candle</option>
+      <option value="Stick">Stick</option>
+      <option value="Area">Area</option>
+      <option value="Percentage">Percentage</option>
+      <option value="LinePercentage">LinePercentage</option>
+      <option value="CandlePercentage">CandlePercentage</option>
+      <option value="StickPercentage">StickPercentage</option>
+      <option value="AreaPercentage">AreaPercentage</option>
+    </options>
+   </parameter>
+   <parameter name="Width" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Height" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="TickPeriods" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Design" type="ChartDesign" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ChartDesign" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCurrencyIntradayChartCustomBinaryResult" type="ChartBinary" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ChartBinary" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetCurrencyIntradayChartCustom" soapAction="http://www.xignite.com/services/GetCurrencyIntradayChartCustom" resultsNode="GetCurrencyIntradayChartCustomResult">
+  <description>Draw a intraday currency chart for a time range in a binary format</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="TimeZone" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Style" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Line">Line</option>
+      <option value="Candle">Candle</option>
+      <option value="Stick">Stick</option>
+      <option value="Area">Area</option>
+      <option value="Percentage">Percentage</option>
+      <option value="LinePercentage">LinePercentage</option>
+      <option value="CandlePercentage">CandlePercentage</option>
+      <option value="StickPercentage">StickPercentage</option>
+      <option value="AreaPercentage">AreaPercentage</option>
+    </options>
+   </parameter>
+   <parameter name="Width" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Height" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="PeriodType" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="TickPeriods" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Design" type="ChartDesign" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ChartDesign" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetCurrencyIntradayChartCustomResult" type="CurrencyChartIntraday" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="CurrencyChartIntraday" type="StockChart" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetChartDesign" soapAction="http://www.xignite.com/services/GetChartDesign" resultsNode="GetChartDesignResult">
+  <description>Returns the default design class for the currency Chart.</description>
+  <parameters>
+  </parameters>
+  <outputs>
+   <output name="GetChartDesignResult" type="ChartDesign" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="ChartDesign" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetTick" soapAction="http://www.xignite.com/services/GetTick" resultsNode="GetTickResult">
+  <description>Returns a tick for a currency pair as of a specific time in the day.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="Time" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetTickResult" type="SingleTick" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="SingleTick" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetTicks" soapAction="http://www.xignite.com/services/GetTicks" resultsNode="GetTicksResult">
+  <description>Returns a range of ticks for a currency pair.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="TickPrecision" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Tick">Tick</option>
+      <option value="Millisecond">Millisecond</option>
+      <option value="Second">Second</option>
+      <option value="Minute">Minute</option>
+      <option value="Hour">Hour</option>
+      <option value="Day">Day</option>
+      <option value="Week">Week</option>
+      <option value="Month">Month</option>
+    </options>
+   </parameter>
+   <parameter name="TickPeriods" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetTicksResult" type="Ticks" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="Ticks" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalTicks" soapAction="http://www.xignite.com/services/GetHistoricalTicks" resultsNode="GetHistoricalTicksResult">
+  <description>Returns a range of ticks for a currency pair.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="AsOfDate" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="TickPrecision" type="string" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+    <options>
+      <option value="Tick">Tick</option>
+      <option value="Millisecond">Millisecond</option>
+      <option value="Second">Second</option>
+      <option value="Minute">Minute</option>
+      <option value="Hour">Hour</option>
+      <option value="Day">Day</option>
+      <option value="Week">Week</option>
+      <option value="Month">Month</option>
+    </options>
+   </parameter>
+   <parameter name="TickPeriods" type="int" minOccurs="1" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalTicksResult" type="Ticks" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="Ticks" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetHistoricalHighLow" soapAction="http://www.xignite.com/services/GetHistoricalHighLow" resultsNode="GetHistoricalHighLowResult">
+  <description>Returns the high and the low ticks for a historical time range.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDateTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDateTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetHistoricalHighLowResult" type="HighLowTick" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HighLowTick" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  <method name="GetIntradayHighLow" soapAction="http://www.xignite.com/services/GetIntradayHighLow" resultsNode="GetIntradayHighLowResult">
+  <description>Returns the high and the low ticks for today.</description>
+  <parameters>
+   <parameter name="Symbol" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="StartDateTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+   <parameter name="EndDateTime" type="string" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="false" isnillable="false">
+   </parameter>
+  </parameters>
+  <outputs>
+   <output name="GetIntradayHighLowResult" type="HighLowTick" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   <parameter name="HighLowTick" type="Common" minOccurs="0" maxOccurs="1" isattribute="false" iscomplex="true" isnillable="false">
+   </parameter>
+   </output>
+  </outputs>
+  </method>
+  </methods>
+ </service>
+
+</ssd>
