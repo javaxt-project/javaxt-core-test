@@ -37,7 +37,9 @@ mvn clean install -Djavaxt.core.local.dir=C:\path\to\javaxt-core\src
 
 ```
 
-**Note**: The local directory should point to the source directory containing the javaxt-core Java files (typically the `src` directory), not necessarily a Maven project. The files will be copied and compiled directly in the test project.
+**Note**: The local directory should point to the source directory containing the
+javaxt-core Java files (typically the `src` directory), not necessarily a Maven project.
+The files will be copied and compiled directly in the test project.
 
 ## Running Tests
 
@@ -63,6 +65,20 @@ mvn test -Djavaxt.core.local.dir=/path/to/javaxt-core/src
 # Example with Windows path (point to src directory)
 mvn test -Djavaxt.core.local.dir=C:\path\to\javaxt-core\src
 ```
+
+## Command Line Interface
+
+A jar file is created during the "package" phase and can be used to interactively
+test javaxt-core features.
+
+```bash
+# Build jar file (See above for more options)
+mvn clean package
+
+# Execute tests via command line
+java -jar dist/javaxt-core-test.jar -test ...
+```
+
 
 ## Contributing
 

@@ -1,5 +1,6 @@
-# Ignore all Maven target directories
+# Ignore all build artifacts
 **/target/
+**/dist/
 
 # Ignore everything in javaxt-core-build/src/main/java
 javaxt-core-build/src/main/java/
