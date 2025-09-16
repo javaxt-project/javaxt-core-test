@@ -61,7 +61,7 @@
 
             <execution>
               <id>move-jar</id>
-              <phase>package</phase>
+              <phase>install</phase>
               <configuration>
                 <target>
                   <mkdir dir="${project.basedir}/../dist"/>
