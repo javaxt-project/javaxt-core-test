@@ -2,22 +2,19 @@ package javaxt.core.test.sql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import javaxt.sql.ConnectionPool;
-import javaxt.sql.ConnectionPool.PoolStatistics;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import javax.sql.ConnectionPoolDataSource;
+import javaxt.sql.ConnectionPool;
+import javaxt.sql.ConnectionPool.PoolStatistics;
+import org.junit.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Performance-focused tests for ConnectionPool class.
@@ -143,6 +140,36 @@ public class ConnectionPoolPerformanceTest {
         System.out.println("Throughput: " + String.format("%.0f", throughput) + " ops/sec");
         System.out.println("Avg time per operation: " + String.format("%.3f", totalTimeMs / numOperations) + " ms");
 
+        // Optional HikariCP comparison
+        if (shouldBenchmarkAgainstHikari()) {
+            HikariDataSource hikariPool = createHikariPool(10, 10);
+
+            long hikariStart = System.nanoTime();
+            for (int i = 0; i < numOperations; i++) {
+                try (Connection conn = hikariPool.getConnection();
+                     PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM perf_test WHERE id = ?")) {
+                    stmt.setInt(1, (i % 1000) + 1);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        rs.next();
+                    }
+                }
+            }
+            long hikariEnd = System.nanoTime();
+
+            double hikariTimeMs = (hikariEnd - hikariStart) / 1_000_000.0;
+            double hikariThroughput = numOperations / (hikariTimeMs / 1000.0);
+
+            System.out.println("\n--- HikariCP Comparison ---");
+            System.out.printf("HikariCP Throughput: %.0f ops/sec  (javaxt: %.0f ops/sec) - ", hikariThroughput, throughput);
+            if (throughput > hikariThroughput) {
+                System.out.printf("javaxt is %.1f%% FASTER\n", ((throughput - hikariThroughput) / hikariThroughput * 100));
+            } else {
+                System.out.printf("HikariCP is %.1f%% faster\n", ((hikariThroughput - throughput) / throughput * 100));
+            }
+
+            hikariPool.close();
+        }
+
         pool.close();
 
         // Should achieve reasonable throughput
@@ -216,13 +243,13 @@ public class ConnectionPoolPerformanceTest {
         // Optional HikariCP comparison
         if (shouldBenchmarkAgainstHikari()) {
             HikariDataSource hikariPool = createHikariPool(20, 10);
-            
+
             CountDownLatch hikariStart = new CountDownLatch(1);
             CountDownLatch hikariFinish = new CountDownLatch(numThreads);
             AtomicInteger hikariOps = new AtomicInteger(0);
-            
+
             long hikariStartTime = System.nanoTime();
-            
+
             for (int i = 0; i < numThreads; i++) {
                 final int threadId = i;
                 new Thread(() -> {
@@ -245,14 +272,14 @@ public class ConnectionPoolPerformanceTest {
                     }
                 }).start();
             }
-            
+
             hikariStart.countDown();
             hikariFinish.await(30, TimeUnit.SECONDS);
             long hikariEndTime = System.nanoTime();
-            
+
             double hikariTimeMs = (hikariEndTime - hikariStartTime) / 1_000_000.0;
             double hikariThroughput = hikariOps.get() / (hikariTimeMs / 1000.0);
-            
+
             System.out.println("\n--- HikariCP Comparison ---");
             System.out.printf("HikariCP Throughput: %.0f ops/sec  (javaxt: %.0f ops/sec) - ", hikariThroughput, throughput);
             if (throughput > hikariThroughput) {
@@ -260,7 +287,7 @@ public class ConnectionPoolPerformanceTest {
             } else {
                 System.out.printf("HikariCP is %.1f%% faster\n", ((hikariThroughput - throughput) / throughput * 100));
             }
-            
+
             hikariPool.close();
         }
 
@@ -326,13 +353,13 @@ public class ConnectionPoolPerformanceTest {
         // Optional HikariCP comparison
         if (shouldBenchmarkAgainstHikari()) {
             HikariDataSource hikariPool = createHikariPool(10, 10);
-            
+
             // Warm up HikariCP
             for (int i = 0; i < 10; i++) {
                 Connection conn = hikariPool.getConnection();
                 conn.close();
             }
-            
+
             // Measure HikariCP latencies
             List<Long> hikariLatencies = new ArrayList<>();
             for (int i = 0; i < numSamples; i++) {
@@ -342,12 +369,13 @@ public class ConnectionPoolPerformanceTest {
                 hikariLatencies.add(endTime - startTime);
                 conn.close();
             }
-            
+
             Collections.sort(hikariLatencies);
             double hikariAvg = hikariLatencies.stream().mapToLong(Long::longValue).average().orElse(0) / 1_000_000.0;
             long hikariP50 = hikariLatencies.get(numSamples / 2);
             long hikariP95 = hikariLatencies.get((int) (numSamples * 0.95));
-            
+            long hikariP99 = hikariLatencies.get((int) (numSamples * 0.99));
+
             System.out.println("\n--- HikariCP Comparison ---");
             System.out.printf("HikariCP Average:   %.3f ms  (javaxt: %.3f ms) - ", hikariAvg, avgLatencyMs);
             if (avgLatencyMs < hikariAvg) {
@@ -357,7 +385,8 @@ public class ConnectionPoolPerformanceTest {
             }
             System.out.printf("HikariCP P50:       %.3f ms  (javaxt: %.3f ms)\n", hikariP50 / 1_000_000.0, p50Ns / 1_000_000.0);
             System.out.printf("HikariCP P95:       %.3f ms  (javaxt: %.3f ms)\n", hikariP95 / 1_000_000.0, p95Ns / 1_000_000.0);
-            
+            System.out.printf("HikariCP P99:       %.3f ms  (javaxt: %.3f ms)\n", hikariP99 / 1_000_000.0, p99Ns / 1_000_000.0);
+
             hikariPool.close();
         }
 
@@ -705,14 +734,14 @@ public class ConnectionPoolPerformanceTest {
         // Optional HikariCP comparison
         if (shouldBenchmarkAgainstHikari()) {
             HikariDataSource hikariPool = createHikariPool(20, 5);
-            
+
             CountDownLatch hikariStart = new CountDownLatch(1);
             CountDownLatch hikariFinish = new CountDownLatch(numThreads);
             AtomicInteger hikariSuccess = new AtomicInteger(0);
             AtomicInteger hikariErrors = new AtomicInteger(0);
-            
+
             long hikariStartTime = System.nanoTime();
-            
+
             for (int i = 0; i < numThreads; i++) {
                 final int threadId = i;
                 new Thread(() -> {
@@ -737,15 +766,15 @@ public class ConnectionPoolPerformanceTest {
                     }
                 }).start();
             }
-            
+
             hikariStart.countDown();
             hikariFinish.await(60, TimeUnit.SECONDS);
             long hikariEndTime = System.nanoTime();
-            
+
             double hikariTimeMs = (hikariEndTime - hikariStartTime) / 1_000_000.0;
             int hikariTotal = hikariSuccess.get() + hikariErrors.get();
             double hikariThroughput = hikariTotal / (hikariTimeMs / 1000.0);
-            
+
             System.out.println("\n--- HikariCP Comparison ---");
             System.out.printf("HikariCP Throughput: %.0f ops/sec  (javaxt: %.0f ops/sec) - ", hikariThroughput, throughput);
             if (throughput > hikariThroughput) {
@@ -754,7 +783,7 @@ public class ConnectionPoolPerformanceTest {
                 System.out.printf("HikariCP is %.1f%% faster under high load\n", ((hikariThroughput - throughput) / throughput * 100));
             }
             System.out.printf("HikariCP Errors:     %d (javaxt: %d)\n", hikariErrors.get(), errorOps);
-            
+
             hikariPool.close();
         }
 
