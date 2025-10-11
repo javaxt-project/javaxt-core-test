@@ -2,6 +2,8 @@ package javaxt.core.test.sql;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import javaxt.sql.Database;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -639,6 +641,126 @@ public class DatabaseTest {
 
         // Verify connections are reasonably fast (< 1 second on average)
         assertTrue("Average connection speed should be < 1000ms", avgSpeed < 1000);
+    }
+
+    @Test
+    public void testConnectionPoolInitialization() throws Exception {
+        printTestHeader("Connection Pool Initialization Test");
+
+        // Skip for MySQL due to old driver class in JavaXT library
+        // (JavaXT tries to use com.mysql.jdbc.* instead of com.mysql.cj.jdbc.*)
+        if (database.getDriver().getVendor().equals("MySQL")) {
+            System.out.println("Skipping MySQL - JavaXT library uses legacy MySQL driver for connection pooling");
+            return;
+        }
+
+        // Set connection pool size
+        database.setConnectionPoolSize(10);
+
+        // Initialize the connection pool
+        database.initConnectionPool();
+
+        System.out.println("Connection pool initialized with size: 10");
+
+        // Get connections from the pool
+        List<javaxt.sql.Connection> connections = new ArrayList<>();
+
+        try {
+            // Acquire multiple connections
+            for (int i = 0; i < 5; i++) {
+                javaxt.sql.Connection conn = database.getConnection();
+                assertNotNull("Connection " + i + " should not be null", conn);
+                connections.add(conn);
+            }
+
+            System.out.println("Successfully acquired 5 connections from the pool");
+
+            // Verify connections work
+            for (int i = 0; i < connections.size(); i++) {
+                javaxt.sql.Connection conn = connections.get(i);
+                javaxt.sql.Record record = conn.getRecord("SELECT COUNT(*) as cnt FROM db_test_users");
+                assertEquals("Connection " + i + " should execute queries", 2, record.get("cnt").toInteger().intValue());
+            }
+
+            System.out.println("All pooled connections executed queries successfully");
+
+        } finally {
+            // Close all connections (return to pool)
+            for (javaxt.sql.Connection conn : connections) {
+                conn.close();
+            }
+        }
+
+        System.out.println("All connections returned to pool");
+
+        // Verify we can get connections again (recycled from pool)
+        try (javaxt.sql.Connection conn = database.getConnection()) {
+            assertNotNull("Should get recycled connection", conn);
+            javaxt.sql.Record record = conn.getRecord("SELECT COUNT(*) as cnt FROM db_test_orders");
+            assertEquals("Recycled connection should work", 2, record.get("cnt").toInteger().intValue());
+        }
+
+        System.out.println("Connection pool recycling working correctly");
+    }
+
+    @Test
+    public void testConnectionPoolConcurrency() throws Exception {
+        printTestHeader("Connection Pool Concurrency Test");
+
+        // Skip for MySQL due to old driver class in JavaXT library
+        if (database.getDriver().getVendor().equals("MySQL")) {
+            System.out.println("Skipping MySQL - JavaXT library uses legacy MySQL driver for connection pooling");
+            return;
+        }
+
+        // Initialize connection pool
+        database.setConnectionPoolSize(5);
+        database.initConnectionPool();
+
+        int numThreads = 10;
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch finishLatch = new CountDownLatch(numThreads);
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger errorCount = new AtomicInteger(0);
+
+        // Create threads that will compete for connections
+        for (int i = 0; i < numThreads; i++) {
+            final int threadId = i;
+            new Thread(() -> {
+                try {
+                    startLatch.await();
+
+                    // Each thread gets and releases a connection multiple times
+                    for (int j = 0; j < 3; j++) {
+                        try (javaxt.sql.Connection conn = database.getConnection()) {
+                            javaxt.sql.Record record = conn.getRecord("SELECT COUNT(*) as cnt FROM db_test_users");
+                            if (record.get("cnt").toInteger() == 2) {
+                                successCount.incrementAndGet();
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println("Thread " + threadId + " error: " + e.getMessage());
+                    errorCount.incrementAndGet();
+                } finally {
+                    finishLatch.countDown();
+                }
+            }).start();
+        }
+
+        // Start all threads
+        startLatch.countDown();
+
+        // Wait for completion
+        assertTrue("All threads should complete within 30 seconds",
+                   finishLatch.await(30, TimeUnit.SECONDS));
+
+        System.out.println("Concurrent operations completed:");
+        System.out.println("  Success count: " + successCount.get());
+        System.out.println("  Error count: " + errorCount.get());
+
+        assertEquals("Should have no errors", 0, errorCount.get());
+        assertEquals("Should have 30 successful operations (10 threads * 3 ops)", 30, successCount.get());
     }
 
     @Test
