@@ -2,7 +2,10 @@ package javaxt.core.test.sql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import java.io.*;
+import java.nio.file.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,6 +31,9 @@ public class ConnectionPoolPerformanceTest {
 
     private ConnectionPoolDataSource dataSource;
     private ConnectionPoolTestConfig.DatabaseConfig dbConfig;
+    private static Map<String, PerformanceMetrics> metricsMap = new HashMap<>();
+    private static int testCount = 0;
+    private static final int TOTAL_TESTS_PER_DATABASE = 9; // Number of @Test methods
 
     /**
      * Provides test parameters - one set for each configured database.
@@ -88,6 +94,14 @@ public class ConnectionPoolPerformanceTest {
         // Setup DataSource using the configuration for this database
         this.dataSource = dbConfig.getConnectionPoolDataSource();
 
+        // Get or create metrics for this database
+        String dbName = dbConfig.getType().getDisplayName();
+        synchronized (metricsMap) {
+            if (!metricsMap.containsKey(dbName)) {
+                metricsMap.put(dbName, new PerformanceMetrics(dbName));
+            }
+        }
+
         // Initialize database with test data
         try (Connection conn = DriverManager.getConnection(
                 dbConfig.getUrl(),
@@ -105,6 +119,22 @@ public class ConnectionPoolPerformanceTest {
                     stmt.addBatch();
                 }
                 stmt.executeBatch();
+            }
+        }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        // Increment test counter and save metrics when all tests for a database complete
+        String dbName = dbConfig.getType().getDisplayName();
+        synchronized (metricsMap) {
+            testCount++;
+            // Save after every TOTAL_TESTS_PER_DATABASE tests (one full set per database)
+            if (testCount % TOTAL_TESTS_PER_DATABASE == 0) {
+                PerformanceMetrics metrics = metricsMap.get(dbName);
+                if (metrics != null) {
+                    metrics.saveToCSV();
+                }
             }
         }
     }
@@ -169,6 +199,9 @@ public class ConnectionPoolPerformanceTest {
 
             hikariPool.close();
         }
+
+        // Record metrics
+        metricsMap.get(dbConfig.getType().getDisplayName()).setSequentialThroughput(throughput);
 
         pool.close();
 
@@ -291,6 +324,9 @@ public class ConnectionPoolPerformanceTest {
             hikariPool.close();
         }
 
+        // Record metrics
+        metricsMap.get(dbConfig.getType().getDisplayName()).setConcurrentThroughput(throughput);
+
         pool.close();
 
         // Check for errors first
@@ -390,6 +426,13 @@ public class ConnectionPoolPerformanceTest {
             hikariPool.close();
         }
 
+        // Record metrics
+        PerformanceMetrics metrics = metricsMap.get(dbConfig.getType().getDisplayName());
+        metrics.setAvgLatencyMs(avgLatencyMs);
+        metrics.setP50LatencyMs(p50Ns / 1_000_000.0);
+        metrics.setP95LatencyMs(p95Ns / 1_000_000.0);
+        metrics.setP99LatencyMs(p99Ns / 1_000_000.0);
+
         pool.close();
 
         // Latency should be reasonable
@@ -463,6 +506,11 @@ public class ConnectionPoolPerformanceTest {
         printTestHeader("Pool Size Scalability Test");
         System.out.println("Operations per test: " + operationsPerTest);
 
+        // Store results for comparison
+        Map<Integer, Double> javaxResults = new HashMap<>();
+        Map<Integer, Double> hikariResults = new HashMap<>();
+
+        // Test javaxt ConnectionPool
         for (int poolSize : poolSizes) {
             ConnectionPool pool = new ConnectionPool(dataSource, poolSize, 10);
 
@@ -478,10 +526,47 @@ public class ConnectionPoolPerformanceTest {
 
             double totalTimeMs = (endTime - startTime) / 1_000_000.0;
             double throughput = operationsPerTest / (totalTimeMs / 1000.0);
+            javaxResults.put(poolSize, throughput);
 
             System.out.println("Pool size " + poolSize + ": " + String.format("%.0f", throughput) + " ops/sec");
 
             pool.close();
+        }
+
+        // Optional HikariCP comparison
+        if (shouldBenchmarkAgainstHikari()) {
+            System.out.println("\n--- HikariCP Comparison ---");
+
+            for (int poolSize : poolSizes) {
+                HikariDataSource hikariPool = createHikariPool(poolSize, 10);
+
+                long hikariStart = System.nanoTime();
+                for (int i = 0; i < operationsPerTest; i++) {
+                    try (Connection conn = hikariPool.getConnection();
+                         PreparedStatement stmt = conn.prepareStatement("SELECT 1")) {
+                        stmt.executeQuery();
+                    }
+                }
+                long hikariEnd = System.nanoTime();
+
+                double hikariTimeMs = (hikariEnd - hikariStart) / 1_000_000.0;
+                double hikariThroughput = operationsPerTest / (hikariTimeMs / 1000.0);
+                hikariResults.put(poolSize, hikariThroughput);
+
+                double javaxThroughput = javaxResults.get(poolSize);
+                System.out.printf("Pool size %d: HikariCP %.0f ops/sec  (javaxt: %.0f ops/sec) - ",
+                    poolSize, hikariThroughput, javaxThroughput);
+
+                if (javaxThroughput > hikariThroughput) {
+                    System.out.printf("javaxt is %.1f%% FASTER\n",
+                        ((javaxThroughput - hikariThroughput) / hikariThroughput * 100));
+                } else {
+                    System.out.printf("HikariCP is %.1f%% faster\n",
+                        ((hikariThroughput - javaxThroughput) / javaxThroughput * 100));
+                }
+
+                hikariPool.close();
+            }
         }
     }
 
@@ -494,6 +579,9 @@ public class ConnectionPoolPerformanceTest {
 
         printTestHeader("Thread Scalability Test");
         System.out.println("Operations per thread: " + operationsPerThread);
+
+        // Store results for comparison
+        Map<Integer, Double> javaxResults = new HashMap<>();
 
         for (int numThreads : threadCounts) {
             CountDownLatch startLatch = new CountDownLatch(1);
@@ -545,6 +633,7 @@ public class ConnectionPoolPerformanceTest {
             int totalOps = totalOperations.get();
             double totalTimeMs = (endTime - startTime) / 1_000_000.0;
             double throughput = totalOps / (totalTimeMs / 1000.0);
+            javaxResults.put(numThreads, throughput);
 
             System.out.println("Threads " + numThreads + ": " + String.format("%.0f", throughput) + " ops/sec");
 
@@ -559,6 +648,65 @@ public class ConnectionPoolPerformanceTest {
         }
 
         pool.close();
+
+        // Optional HikariCP comparison
+        if (shouldBenchmarkAgainstHikari()) {
+            System.out.println("\n--- HikariCP Comparison ---");
+            HikariDataSource hikariPool = createHikariPool(20, 10);
+
+            for (int numThreads : threadCounts) {
+                CountDownLatch hikariStart = new CountDownLatch(1);
+                CountDownLatch hikariFinish = new CountDownLatch(numThreads);
+                AtomicInteger hikariOps = new AtomicInteger(0);
+
+                long hikariStartTime = System.nanoTime();
+
+                for (int i = 0; i < numThreads; i++) {
+                    new Thread(() -> {
+                        try {
+                            hikariStart.await();
+                            for (int j = 0; j < operationsPerThread; j++) {
+                                try (Connection conn = hikariPool.getConnection();
+                                     PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM perf_test")) {
+                                    stmt.executeQuery();
+                                }
+                                hikariOps.incrementAndGet();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            hikariFinish.countDown();
+                        }
+                    }).start();
+                }
+
+                hikariStart.countDown();
+                try {
+                    hikariFinish.await(30, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+                long hikariEndTime = System.nanoTime();
+
+                double hikariTimeMs = (hikariEndTime - hikariStartTime) / 1_000_000.0;
+                double hikariThroughput = hikariOps.get() / (hikariTimeMs / 1000.0);
+                double javaxThroughput = javaxResults.get(numThreads);
+
+                System.out.printf("Threads %d: HikariCP %.0f ops/sec  (javaxt: %.0f ops/sec) - ",
+                    numThreads, hikariThroughput, javaxThroughput);
+
+                if (javaxThroughput > hikariThroughput) {
+                    System.out.printf("javaxt is %.1f%% FASTER\n",
+                        ((javaxThroughput - hikariThroughput) / hikariThroughput * 100));
+                } else {
+                    System.out.printf("HikariCP is %.1f%% faster\n",
+                        ((hikariThroughput - javaxThroughput) / javaxThroughput * 100));
+                }
+            }
+
+            hikariPool.close();
+        }
     }
 
     // ==================== MEMORY AND RESOURCE TESTS ====================
@@ -789,8 +937,82 @@ public class ConnectionPoolPerformanceTest {
 
         pool.close();
 
+        // Record metrics
+        PerformanceMetrics metrics = metricsMap.get(dbConfig.getType().getDisplayName());
+        metrics.setHighLoadThroughput(throughput);
+        metrics.setHighLoadErrorRate(errorRate);
+
         // Should have low error rate
         assertTrue("Error rate should be less than 5%", errorRate < 5.0);
         assertTrue("Should complete most operations", successOps > numThreads * operationsPerThread * 0.9);
+    }
+
+    // ==================== PERFORMANCE METRICS TRACKER ====================
+
+    /**
+     * Helper class to track and save performance metrics to CSV
+     */
+    private static class PerformanceMetrics {
+        private static final String CSV_FILE = "src/test/resources/performance_results.csv";
+        private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        private final String timestamp;
+        private final String database;
+
+        private double sequentialThroughput;
+        private double concurrentThroughput;
+        private double avgLatencyMs;
+        private double p50LatencyMs;
+        private double p95LatencyMs;
+        private double p99LatencyMs;
+        private double highLoadThroughput;
+        private double highLoadErrorRate;
+
+        public PerformanceMetrics(String database) {
+            this.timestamp = DATE_FORMAT.format(new java.util.Date());
+            this.database = database;
+        }
+
+        public void setSequentialThroughput(double value) { this.sequentialThroughput = value; }
+        public void setConcurrentThroughput(double value) { this.concurrentThroughput = value; }
+        public void setAvgLatencyMs(double value) { this.avgLatencyMs = value; }
+        public void setP50LatencyMs(double value) { this.p50LatencyMs = value; }
+        public void setP95LatencyMs(double value) { this.p95LatencyMs = value; }
+        public void setP99LatencyMs(double value) { this.p99LatencyMs = value; }
+        public void setHighLoadThroughput(double value) { this.highLoadThroughput = value; }
+        public void setHighLoadErrorRate(double value) { this.highLoadErrorRate = value; }
+
+        public synchronized void saveToCSV() throws IOException {
+            Path csvPath = Paths.get(CSV_FILE);
+            boolean fileExists = Files.exists(csvPath);
+
+            // Create parent directories if they don't exist
+            Files.createDirectories(csvPath.getParent());
+
+            try (FileWriter fw = new FileWriter(csvPath.toFile(), true);
+                 BufferedWriter bw = new BufferedWriter(fw);
+                 PrintWriter out = new PrintWriter(bw)) {
+
+                // Write header if file doesn't exist
+                if (!fileExists || Files.size(csvPath) == 0) {
+                    out.println("timestamp,database,sequential_throughput_ops_sec,concurrent_throughput_ops_sec," +
+                               "avg_latency_ms,p50_latency_ms,p95_latency_ms,p99_latency_ms," +
+                               "high_load_throughput_ops_sec,high_load_error_rate_pct");
+                }
+
+                // Write data row
+                out.printf("%s,%s,%.2f,%.2f,%.4f,%.4f,%.4f,%.4f,%.2f,%.2f%n",
+                    timestamp,
+                    database,
+                    sequentialThroughput,
+                    concurrentThroughput,
+                    avgLatencyMs,
+                    p50LatencyMs,
+                    p95LatencyMs,
+                    p99LatencyMs,
+                    highLoadThroughput,
+                    highLoadErrorRate);
+            }
+        }
     }
 }
