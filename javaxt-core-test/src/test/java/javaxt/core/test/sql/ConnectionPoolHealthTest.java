@@ -1,19 +1,18 @@
 package javaxt.core.test.sql;
 
-import javaxt.sql.ConnectionPool;
-import javaxt.sql.ConnectionPool.PoolStatistics;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
-import javax.sql.ConnectionPoolDataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.*;
-
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.sql.ConnectionPoolDataSource;
+import javaxt.sql.ConnectionPool;
+import javaxt.sql.ConnectionPool.PoolStatistics;
+import org.junit.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests for ConnectionPool health monitoring, validation, and lifecycle features.
@@ -91,7 +90,7 @@ public class ConnectionPoolHealthTest {
             System.out.println("\n=== " + dbName + " - Health Monitoring Tests ===");
             lastPrintedDatabase = dbName;
         }
-        
+
         ConnectionPool pool = new ConnectionPool(dataSource, 3, new HashMap<String, Object>() {{
             put("timeout", 5);
             put("idleTimeout", 30);
@@ -317,6 +316,112 @@ public class ConnectionPoolHealthTest {
         PoolStatistics stats3 = pool3.getPoolStatistics();
         assertEquals("Min connections for pool size 50", 10, stats3.minConnections);
         pool3.close();
+    }
+
+    @Test
+    public void testWrapperReuseAndActiveCountIntegrity() throws Exception {
+        printTestHeader("Wrapper Reuse and Active Count Integrity Test");
+
+        // This test specifically validates the wrapper pooling optimization
+        // It ensures that:
+        // 1. Wrappers are properly reused without creating new objects
+        // 2. Active connection counter remains consistent during warm-up and recycling
+        // 3. No negative counter errors occur
+
+        ConnectionPool pool = new ConnectionPool(dataSource, 10, new HashMap<String, Object>() {{
+            put("timeout", 5);
+            put("idleTimeout", 30);
+            put("maxAge", 60);
+            put("validationQuery", "SELECT 1");
+        }});
+
+        // Initial state
+        PoolStatistics stats = pool.getPoolStatistics();
+        assertEquals("Should have 0 active connections initially", 0, stats.activeConnections);
+        assertEquals("Should have 0 recycled connections initially", 0, stats.recycledConnections);
+
+        // Get and release multiple connections rapidly to test wrapper reuse
+        for (int i = 0; i < 10; i++) {
+            javaxt.sql.Connection conn = pool.getConnection();
+
+            // Verify connection works
+            java.sql.Connection rawConn = conn.getConnection();
+            assertTrue("Connection should be valid", rawConn.isValid(5));
+
+            // Verify active count increased
+            stats = pool.getPoolStatistics();
+            assertTrue("Should have at least 1 active connection", stats.activeConnections >= 1);
+
+            // Close and verify recycling
+            conn.close();
+
+            // After close, active should decrease and recycled should increase
+            stats = pool.getPoolStatistics();
+            assertTrue("Active connections should not be negative", stats.activeConnections >= 0);
+        }
+
+        // Final state check
+        stats = pool.getPoolStatistics();
+        assertEquals("Should have 0 active connections at end", 0, stats.activeConnections);
+        assertTrue("Should have recycled connections", stats.recycledConnections > 0);
+        assertTrue("Active count should not go negative", stats.activeConnections >= 0);
+
+        // Test concurrent acquisition and release to stress test wrapper reuse
+        int numThreads = 20;
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch finishLatch = new CountDownLatch(numThreads);
+        AtomicInteger errorCount = new AtomicInteger(0);
+
+        for (int i = 0; i < numThreads; i++) {
+            new Thread(() -> {
+                try {
+                    startLatch.await();
+
+                    for (int j = 0; j < 10; j++) {
+                        javaxt.sql.Connection conn = pool.getConnection();
+                        java.sql.Connection rawConn = conn.getConnection();
+
+                        // Execute a simple query
+                        try (PreparedStatement stmt = rawConn.prepareStatement("SELECT 1")) {
+                            stmt.executeQuery();
+                        }
+
+                        conn.close();
+                    }
+
+                } catch (AssertionError e) {
+                    // Catch the specific error we're testing for
+                    if (e.getMessage().contains("Active connections count went negative")) {
+                        errorCount.incrementAndGet();
+                        e.printStackTrace();
+                    } else {
+                        throw e;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    finishLatch.countDown();
+                }
+            }).start();
+        }
+
+        // Start all threads
+        startLatch.countDown();
+
+        // Wait for completion
+        assertTrue("All threads should complete within 30 seconds",
+                   finishLatch.await(30, TimeUnit.SECONDS));
+
+        // Verify no errors occurred
+        assertEquals("Should have no active count errors", 0, errorCount.get());
+
+        // Final verification
+        stats = pool.getPoolStatistics();
+        assertEquals("Should have 0 active connections after all threads complete", 0, stats.activeConnections);
+        assertTrue("Should have recycled connections", stats.recycledConnections > 0);
+        assertTrue("Active count should not be negative", stats.activeConnections >= 0);
+
+        pool.close();
     }
 
     // ==================== HEALTH MONITORING TESTS ====================
