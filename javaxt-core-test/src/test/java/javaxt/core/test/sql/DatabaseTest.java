@@ -647,13 +647,6 @@ public class DatabaseTest {
     public void testConnectionPoolInitialization() throws Exception {
         printTestHeader("Connection Pool Initialization Test");
 
-        // Skip for MySQL due to old driver class in JavaXT library
-        // (JavaXT tries to use com.mysql.jdbc.* instead of com.mysql.cj.jdbc.*)
-        if (database.getDriver().getVendor().equals("MySQL")) {
-            System.out.println("Skipping MySQL - JavaXT library uses legacy MySQL driver for connection pooling");
-            return;
-        }
-
         // Set connection pool size
         database.setConnectionPoolSize(10);
 
@@ -707,12 +700,6 @@ public class DatabaseTest {
     public void testConnectionPoolConcurrency() throws Exception {
         printTestHeader("Connection Pool Concurrency Test");
 
-        // Skip for MySQL due to old driver class in JavaXT library
-        if (database.getDriver().getVendor().equals("MySQL")) {
-            System.out.println("Skipping MySQL - JavaXT library uses legacy MySQL driver for connection pooling");
-            return;
-        }
-
         // Initialize connection pool
         database.setConnectionPoolSize(5);
         database.initConnectionPool();
@@ -761,6 +748,97 @@ public class DatabaseTest {
 
         assertEquals("Should have no errors", 0, errorCount.get());
         assertEquals("Should have 30 successful operations (10 threads * 3 ops)", 30, successCount.get());
+    }
+
+    @Test
+    public void testH2InMemoryDatabase() throws Exception {
+        // Skip this test if not H2
+        if (!database.getDriver().getVendor().equals("H2")) {
+            return;
+        }
+
+        printTestHeader("H2 In-Memory Database Test");
+
+        // Create a new Database instance using in-memory mode
+        Database memDb = new Database();
+        memDb.setDriver(javaxt.sql.Driver.H2);
+        memDb.setHost("memory"); // Explicitly request in-memory database
+        memDb.setName("testdb");
+        memDb.setUserName("sa");
+        memDb.setPassword("");
+
+        System.out.println("H2 Database configured for in-memory mode");
+        System.out.println("Connection String: " + memDb.getConnectionString());
+
+        try (javaxt.sql.Connection conn = memDb.getConnection()) {
+            assertNotNull("Connection should not be null", conn);
+            assertTrue("Connection should be valid", conn.getConnection().isValid(5));
+
+            System.out.println("Successfully connected to in-memory database");
+
+            // Create a table in memory
+            conn.execute("CREATE TABLE MemoryTest (id INT PRIMARY KEY, description VARCHAR(100))");
+            conn.execute("INSERT INTO MemoryTest VALUES (1, 'In-Memory Data')");
+            conn.execute("INSERT INTO MemoryTest VALUES (2, 'Fast and Temporary')");
+
+            // Query the in-memory table
+            int count = 0;
+            for (javaxt.sql.Record record : conn.getRecords("SELECT * FROM MemoryTest ORDER BY id")) {
+                count++;
+                System.out.println("Record " + count + ": " + record.get("id") + " - " + record.get("description"));
+            }
+
+            assertEquals("Should have 2 records in memory", 2, count);
+            System.out.println("In-memory database test passed");
+
+            // Cleanup
+            conn.execute("DROP TABLE MemoryTest");
+        }
+
+        System.out.println("In-memory data will be lost when connection closes (as expected)");
+    }
+
+    @Test
+    public void testH2InMemoryWithConnectionPool() throws Exception {
+        // Skip this test if not H2
+        if (!database.getDriver().getVendor().equals("H2")) {
+            return;
+        }
+
+        printTestHeader("H2 In-Memory with Connection Pool Test");
+
+        // Create in-memory database with connection pool
+        Database memDb = new Database();
+        memDb.setDriver(javaxt.sql.Driver.H2);
+        memDb.setHost("memory"); // In-memory mode
+        memDb.setName("pooltest");
+        memDb.setUserName("sa");
+        memDb.setPassword("");
+
+        // Initialize connection pool
+        memDb.setConnectionPoolSize(5);
+        memDb.initConnectionPool();
+
+        System.out.println("In-memory H2 database with connection pool initialized");
+
+        try (javaxt.sql.Connection conn = memDb.getConnection()) {
+            // Create test table (avoid 'value' keyword)
+            conn.execute("CREATE TABLE PoolTest (id INT PRIMARY KEY, test_value VARCHAR(50))");
+            conn.execute("INSERT INTO PoolTest VALUES (1, 'Pooled In-Memory')");
+        }
+
+        // Get multiple connections from the pool and verify data persists
+        for (int i = 0; i < 3; i++) {
+            try (javaxt.sql.Connection conn = memDb.getConnection()) {
+                javaxt.sql.Record record = conn.getRecord("SELECT test_value FROM PoolTest WHERE id = 1");
+                assertNotNull("Should retrieve record from in-memory pool", record);
+                assertEquals("Data should persist across pooled connections",
+                           "Pooled In-Memory", record.get("test_value").toString());
+                System.out.println("Connection " + (i+1) + " from pool: " + record.get("test_value"));
+            }
+        }
+
+        System.out.println("In-memory connection pool test passed - data persists within pool lifecycle");
     }
 
     @Test
