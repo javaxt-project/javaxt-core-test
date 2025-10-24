@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.sql.ConnectionPoolDataSource;
 import javaxt.sql.ConnectionPool;
 import javaxt.sql.ConnectionPool.PoolStatistics;
+import javaxt.sql.Database;
+import javaxt.sql.Record;
 import org.junit.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
@@ -674,5 +676,215 @@ public class ConnectionPoolHealthTest {
         // Close the connections
         conn1.close();
         conn2.close();
+    }
+
+    @Test
+    public void testRealWorldThreadPoolPattern() throws Exception {
+        printTestHeader("Real-World ThreadPool Pattern Test");
+
+        // Create a database with connection pool (like FileIndex does)
+        Database db = new Database();
+        db.setDriver(getDriverFromDataSource());
+        db.setHost(getHostFromDataSource());
+        db.setName(getDatabaseNameFromDataSource());
+        db.setUserName(getUserFromDataSource());
+        db.setPassword(getPasswordFromDataSource());
+
+        // Initialize connection pool
+        db.setConnectionPoolSize(10);
+        db.initConnectionPool();
+
+        System.out.println("Database connection pool initialized with size: 10");
+
+        // Create test table
+        try (javaxt.sql.Connection conn = db.getConnection()) {
+            conn.execute("DROP TABLE IF EXISTS threadpool_test");
+            conn.execute("CREATE TABLE threadpool_test (id INT PRIMARY KEY, thread_name VARCHAR(100), timestamp BIGINT)");
+        }
+
+        // Track results
+        final AtomicInteger successCount = new AtomicInteger(0);
+        final AtomicInteger errorCount = new AtomicInteger(0);
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        // Create a custom ThreadPool similar to FileIndex usage
+        int numThreads = 10;
+        int poolSize = 100;
+
+        javaxt.utils.ThreadPool threadPool = new javaxt.utils.ThreadPool(numThreads, poolSize) {
+            public void process(Object obj) {
+                Integer taskId = (Integer) obj;
+
+                try {
+                    // Get connection from pool (like FileIndex does)
+                    try (javaxt.sql.Connection conn = db.getConnection()) {
+                        // Simulate database work
+                        String threadName = Thread.currentThread().getName();
+                        long timestamp = System.currentTimeMillis();
+
+                        conn.execute("INSERT INTO threadpool_test VALUES (" +
+                                   taskId + ", '" + threadName + "', " + timestamp + ")");
+
+                        // Simulate some work
+                        Thread.sleep(10);
+
+                        // Verify the insert worked
+                        Record record = conn.getRecord("SELECT COUNT(*) FROM threadpool_test WHERE id = " + taskId);
+                        if (record != null && record.get(0).toInteger() == 1) {
+                            successCount.incrementAndGet();
+                        } else {
+                            errorCount.incrementAndGet();
+                        }
+                    }
+                    // Connection.close() called automatically here
+
+                } catch (Exception e) {
+                    errorCount.incrementAndGet();
+                    System.err.println("Error in thread " + Thread.currentThread().getName() + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+            public void exit() {
+                latch.countDown();
+            }
+        }.start();
+
+        // Add tasks to the thread pool
+        System.out.println("Adding 100 tasks to ThreadPool with " + numThreads + " worker threads");
+        for (int i = 0; i < 100; i++) {
+            threadPool.add(i);
+        }
+
+        // Signal completion and wait for all tasks to finish
+        threadPool.done();
+        threadPool.join();
+
+        // Wait for exit to be called
+        assertTrue("ThreadPool should complete within 30 seconds",
+                  latch.await(30, TimeUnit.SECONDS));
+
+        System.out.println("All tasks completed:");
+        System.out.println("  Success: " + successCount.get());
+        System.out.println("  Errors: " + errorCount.get());
+
+        // Verify results
+        assertEquals("Should have no errors", 0, errorCount.get());
+        assertEquals("Should have 100 successful operations", 100, successCount.get());
+
+        // Check pool statistics
+        ConnectionPool pool = db.getConnectionPool();
+        PoolStatistics stats = pool.getPoolStatistics();
+
+        System.out.println("\nFinal pool statistics:");
+        System.out.println("  Active connections: " + stats.activeConnections);
+        System.out.println("  Recycled connections: " + stats.recycledConnections);
+        System.out.println("  Total connections: " + stats.totalConnections);
+
+        // All connections should be returned to pool
+        assertEquals("All connections should be returned to pool", 0, stats.activeConnections);
+        assertTrue("Should have recycled connections", stats.recycledConnections > 0);
+
+        // Verify data integrity
+        try (javaxt.sql.Connection conn = db.getConnection()) {
+            Record countRecord = conn.getRecord("SELECT COUNT(*) FROM threadpool_test");
+            int count = countRecord.get(0).toInteger();
+            assertEquals("Should have 100 records in database", 100, count);
+
+            // Cleanup
+            conn.execute("DROP TABLE IF EXISTS threadpool_test");
+        }
+
+        System.out.println("Real-world ThreadPool pattern test passed!");
+    }
+
+    // Helper methods to extract connection details from dataSource
+    private javaxt.sql.Driver getDriverFromDataSource() {
+        String className = dataSource.getClass().getName();
+        if (className.contains("PGConnectionPoolDataSource")) {
+            return javaxt.sql.Driver.PostgreSQL;
+        } else if (className.contains("MysqlConnectionPoolDataSource")) {
+            return javaxt.sql.Driver.MySQL;
+        } else if (className.contains("JdbcDataSource")) {
+            return javaxt.sql.Driver.H2;
+        }
+        throw new IllegalStateException("Unknown datasource type: " + className);
+    }
+
+    private String getHostFromDataSource() {
+        try {
+            if (dataSource instanceof org.postgresql.ds.PGConnectionPoolDataSource) {
+                org.postgresql.ds.PGConnectionPoolDataSource pgDS =
+                    (org.postgresql.ds.PGConnectionPoolDataSource) dataSource;
+                return pgDS.getServerNames()[0];
+            } else if (dataSource instanceof com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) {
+                com.mysql.cj.jdbc.MysqlConnectionPoolDataSource mysqlDS =
+                    (com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) dataSource;
+                return mysqlDS.getServerName();
+            } else if (dataSource instanceof org.h2.jdbcx.JdbcDataSource) {
+                // H2 file-based
+                String tempDir = System.getProperty("java.io.tmpdir");
+                if (!tempDir.endsWith(java.io.File.separator)) {
+                    tempDir += java.io.File.separator;
+                }
+                return tempDir + "javaxt_test_h2";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "localhost";
+    }
+
+    private String getDatabaseNameFromDataSource() {
+        try {
+            if (dataSource instanceof org.postgresql.ds.PGConnectionPoolDataSource) {
+                org.postgresql.ds.PGConnectionPoolDataSource pgDS =
+                    (org.postgresql.ds.PGConnectionPoolDataSource) dataSource;
+                return pgDS.getDatabaseName();
+            } else if (dataSource instanceof com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) {
+                com.mysql.cj.jdbc.MysqlConnectionPoolDataSource mysqlDS =
+                    (com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) dataSource;
+                return mysqlDS.getDatabaseName();
+            } else if (dataSource instanceof org.h2.jdbcx.JdbcDataSource) {
+                return "test";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "test";
+    }
+
+    private String getUserFromDataSource() {
+        try {
+            if (dataSource instanceof org.postgresql.ds.PGConnectionPoolDataSource) {
+                org.postgresql.ds.PGConnectionPoolDataSource pgDS =
+                    (org.postgresql.ds.PGConnectionPoolDataSource) dataSource;
+                return pgDS.getUser();
+            } else if (dataSource instanceof com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) {
+                com.mysql.cj.jdbc.MysqlConnectionPoolDataSource mysqlDS =
+                    (com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) dataSource;
+                return mysqlDS.getUser();
+            } else if (dataSource instanceof org.h2.jdbcx.JdbcDataSource) {
+                org.h2.jdbcx.JdbcDataSource h2DS = (org.h2.jdbcx.JdbcDataSource) dataSource;
+                return h2DS.getUser();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "sa";
+    }
+
+    private String getPasswordFromDataSource() {
+        try {
+            if (dataSource instanceof org.h2.jdbcx.JdbcDataSource) {
+                org.h2.jdbcx.JdbcDataSource h2DS = (org.h2.jdbcx.JdbcDataSource) dataSource;
+                return h2DS.getPassword();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // For security, we can't easily retrieve passwords from PostgreSQL/MySQL datasources
+        // Use the same password from ConnectionPoolTestConfig
+        return dbConfig.getPassword();
     }
 }
