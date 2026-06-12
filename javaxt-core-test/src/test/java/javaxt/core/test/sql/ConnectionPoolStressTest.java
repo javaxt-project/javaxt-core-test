@@ -550,6 +550,86 @@ public class ConnectionPoolStressTest {
     }
 
 
+    // ==================== 7. CLOSE WAKES PARKED WAITERS ====================
+
+    /**
+     * A thread parked inside acquireConnection() must be woken up promptly when
+     * the pool is closed - it should not sleep out its full timeout. This guards
+     * against the lost-wakeup-on-close bug where waiters were left parked while
+     * close() drained recycledConnections without unparking the extras.
+     *
+     * <p>The test holds all connections, spawns a waiter that will park,
+     * closes the pool from a third thread, and asserts the waiter fails fast
+     * (well before its 30-second timeout).</p>
+     */
+    @Test
+    public void testCloseWakesParkedWaiters() throws Exception {
+        printTestHeader("Close Wakes Parked Waiters");
+
+        final int poolSize = 1;
+        // Long timeout so we'd notice if the waiter slept it out.
+        final ConnectionPool pool = new ConnectionPool(dataSource, poolSize, 30);
+
+        // Hold the only connection so the waiter is forced to park.
+        javaxt.sql.Connection held = pool.getConnection();
+        try {
+            final CountDownLatch waiterReady = new CountDownLatch(1);
+            final java.util.concurrent.atomic.AtomicReference<Throwable> waiterError =
+                new java.util.concurrent.atomic.AtomicReference<>();
+            final long[] waiterDurationNs = new long[1];
+
+            Thread waiter = new Thread(() -> {
+                waiterReady.countDown();
+                long t0 = System.nanoTime();
+                try (javaxt.sql.Connection c = pool.getConnection()) {
+                    // Should not get here - pool will close before any release.
+                    waiterError.set(new AssertionError(
+                        "Waiter unexpectedly received a connection"));
+                } catch (Throwable e) {
+                    waiterError.set(e);
+                } finally {
+                    waiterDurationNs[0] = System.nanoTime() - t0;
+                }
+            }, "stress-test-waiter");
+            waiter.start();
+
+            // Give the waiter a moment to enter park.
+            waiterReady.await();
+            Thread.sleep(100);
+
+            // Close from the test thread. This should wake the parked waiter.
+            long closeStartNs = System.nanoTime();
+            pool.close();
+            long closeDurationMs = (System.nanoTime() - closeStartNs) / 1_000_000;
+
+            // Waiter should return very quickly after close, not after 30s.
+            waiter.join(5_000);
+            assertFalse("Waiter should have terminated after pool.close()", waiter.isAlive());
+
+            long waiterMs = waiterDurationNs[0] / 1_000_000L;
+            Throwable err = waiterError.get();
+
+            System.out.println("  Close took: " + closeDurationMs + " ms");
+            System.out.println("  Waiter blocked for: " + waiterMs + " ms");
+            System.out.println("  Waiter error class: " + (err == null ? "(none)" : err.getClass().getSimpleName()));
+            System.out.println("  Waiter error msg: " + (err == null ? "(none)" : err.getMessage()));
+
+            // Waiter must have failed fast (well under the 30s pool timeout).
+            assertTrue("Waiter should have been unparked within 2 seconds; took " + waiterMs + " ms",
+                       waiterMs < 2000);
+
+            // Waiter must have received the specific "pool disposed" failure -
+            // pins the contract that close() causes IllegalStateException, not
+            // TimeoutException or a phantom connection.
+            assertNotNull("Waiter should have received an error from acquire on closed pool", err);
+            assertEquals("Waiter should have received IllegalStateException",
+                         IllegalStateException.class, err.getClass());
+        } finally {
+            try { held.close(); } catch (Exception ignore) {}
+        }
+    }
+
+
     // ==================== HELPERS ====================
 
     private static long usedHeapBytes() {
