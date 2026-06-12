@@ -42,7 +42,8 @@ public class ConnectionPoolTestConfig {
     public enum DatabaseType {
         POSTGRESQL("postgresql.properties", "PostgreSQL"),
         MYSQL("mysql.properties", "MySQL"),
-        H2("h2.properties", "H2");
+        H2("h2.properties", "H2"),
+        H2_FILE("h2-file.properties", "H2-File");
 
         private final String configFile;
         private final String displayName;
@@ -163,7 +164,8 @@ public class ConnectionPoolTestConfig {
                     return mysqlDataSource;
 
                 case H2:
-                    // H2's JdbcDataSource is a simple DataSource
+                case H2_FILE:
+                    // H2's JdbcDataSource handles both mem: and file: URLs.
                     String h2Url = "jdbc:h2:" + getDatabaseName();
                     JdbcDataSource h2DataSource = new JdbcDataSource();
                     h2DataSource.setURL(h2Url);
@@ -190,6 +192,7 @@ public class ConnectionPoolTestConfig {
                 case MYSQL:
                     return "jdbc:mysql://" + getHost() + ":" + getPort() + "/" + getDatabaseName();
                 case H2:
+                case H2_FILE:
                     return "jdbc:h2:" + getDatabaseName();
                 default:
                     throw new IllegalStateException("Unsupported database type: " + type);
@@ -227,6 +230,27 @@ public class ConnectionPoolTestConfig {
             }
             globalError = sb.toString();
         }
+
+        // Clean up H2_FILE artifacts at JVM shutdown so they don't accumulate
+        // in /tmp across runs. Best-effort: H2 has its own shutdown hook that
+        // releases file handles, but shutdown-hook order is undefined. On
+        // Windows in particular, attempting to delete a still-locked .mv.db
+        // silently fails; in that case the artifact is harmless and will be
+        // overwritten by the next run's setUp(). We wait briefly so H2's hook
+        // is more likely to have released first, then attempt cleanup.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            DatabaseConfig fileConfig = configurations.get(DatabaseType.H2_FILE);
+            if (fileConfig == null || !fileConfig.isValid()) return;
+            try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+            String dbName = fileConfig.getDatabaseName();
+            String path = dbName.startsWith("file:") ? dbName.substring(5) : dbName;
+            int semi = path.indexOf(';');
+            if (semi >= 0) path = path.substring(0, semi);
+            for (String suffix : new String[]{".mv.db", ".trace.db", ".lock.db"}) {
+                java.io.File f = new java.io.File(path + suffix);
+                if (f.exists()) f.delete(); // best-effort; ignore failures
+            }
+        }, "ConnectionPoolTestConfig-H2FileCleanup"));
     }
 
     /**
@@ -242,6 +266,28 @@ public class ConnectionPoolTestConfig {
             properties.setProperty("db.host", "localhost");
             properties.setProperty("db.port", "9092");
             properties.setProperty("db.name", "mem:testdb;DB_CLOSE_DELAY=-1");
+            properties.setProperty("db.user", "sa");
+            properties.setProperty("db.password", "");
+            return new DatabaseConfig(dbType, properties, null, true);
+        }
+
+        // H2_FILE is also built-in. Uses a fixed path in the temp dir so the
+        // file artifacts are easy to find and clean up. DB_CLOSE_DELAY=-1 keeps
+        // the database open across connection closes (matches the H2 in-memory
+        // semantics; without it, the DB would be torn down between each
+        // checkout and warm-up table state would vanish).
+        //
+        // NOTE: db.host and db.port are dummy placeholders. The full file path
+        // (and any URL params) is encoded into db.name. Callers should use
+        // getDatabaseName() or getUrl() for H2_FILE configs; getHost()/getPort()
+        // will return "file"/0 which are not meaningful.
+        if (dbType == DatabaseType.H2_FILE) {
+            String tmpDir = System.getProperty("java.io.tmpdir");
+            if (!tmpDir.endsWith(java.io.File.separator)) tmpDir += java.io.File.separator;
+            String filePath = tmpDir + "javaxt_pool_test_h2";
+            properties.setProperty("db.host", "file");
+            properties.setProperty("db.port", "0");
+            properties.setProperty("db.name", "file:" + filePath + ";DB_CLOSE_DELAY=-1");
             properties.setProperty("db.user", "sa");
             properties.setProperty("db.password", "");
             return new DatabaseConfig(dbType, properties, null, true);

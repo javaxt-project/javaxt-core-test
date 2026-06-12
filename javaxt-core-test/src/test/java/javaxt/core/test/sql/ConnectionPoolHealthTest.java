@@ -11,7 +11,6 @@ import javaxt.sql.Database;
 import javaxt.sql.Record;
 import org.junit.*;
 import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -34,13 +33,13 @@ public class ConnectionPoolHealthTest {
      */
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-        // Skip all tests if no database is configured
-        assumeTrue(
-            "Skipping ConnectionPool health tests: " + ConnectionPoolTestConfig.getGlobalError(),
-            ConnectionPoolTestConfig.hasValidConfiguration()
-        );
-
+        // Returning an empty list causes Parameterized to skip the class cleanly.
+        // assumeTrue() thrown from @Parameters surfaces as a class-init error,
+        // not a skip, so don't use it here.
         List<Object[]> params = new ArrayList<>();
+        if (!ConnectionPoolTestConfig.hasValidConfiguration()) {
+            return params;
+        }
         for (ConnectionPoolTestConfig.DatabaseConfig config : ConnectionPoolTestConfig.getValidConfigurations()) {
             params.add(new Object[]{config.getType().getDisplayName(), config});
         }
@@ -212,26 +211,31 @@ public class ConnectionPoolHealthTest {
             put("validationQuery", "SELECT 1");
         }});
 
-        // Get a connection and release it
-        java.sql.Connection conn1 = pool.getConnection().getConnection();
-        conn1.close();
+        // Fill all 3 slots so we have an observable before/after.
+        List<java.sql.Connection> connections = new ArrayList<>();
+        for (int i = 0; i < 3; i++) connections.add(pool.getConnection().getConnection());
+        for (java.sql.Connection c : connections) c.close();
 
-        PoolStatistics stats = pool.getPoolStatistics();
-        assertEquals("Should have 1 recycled connection", 1, stats.recycledConnections);
+        PoolStatistics before = pool.getPoolStatistics();
+        assertEquals("Should have 3 recycled connections before timeout", 3, before.recycledConnections);
+        assertEquals("Should have 3 total connections before timeout", 3, before.totalConnections);
 
-        // Wait for idle timeout to expire
+        // Wait past the idle timeout.
         Thread.sleep(1500);
 
-        // Trigger a health check by getting another connection
-        java.sql.Connection conn2 = pool.getConnection().getConnection();
-        conn2.close();
+        // Drive the health-check pass synchronously (otherwise it would only
+        // run every 30 seconds; this is why we have forceHealthCheck()).
+        pool.forceHealthCheck();
 
-        // Wait a bit more and check again
-        Thread.sleep(100);
-
-        // The idle connection should have been removed by health monitoring
-        // Note: Health monitoring runs every 30 seconds, so we can't reliably test this in a unit test
-        // This test mainly verifies that the pool doesn't crash with short idle timeouts
+        PoolStatistics after = pool.getPoolStatistics();
+        // Eviction must observably reduce either recycled or total. Warm-up
+        // can reseed up to minConnections (1 for pool size 3), so we expect
+        // a strict decrease in at least one of recycled or total.
+        assertTrue("Idle eviction should reduce recycled or total; "
+                       + "before(r=" + before.recycledConnections + ",t=" + before.totalConnections + ") "
+                       + "after(r=" + after.recycledConnections + ",t=" + after.totalConnections + ")",
+                   after.totalConnections < before.totalConnections
+                || after.recycledConnections < before.recycledConnections);
 
         pool.close();
     }
@@ -246,27 +250,30 @@ public class ConnectionPoolHealthTest {
             put("validationQuery", "SELECT 1");
         }});
 
+        // Fill all 3 slots so we have an observable before/after.
+        List<java.sql.Connection> connections = new ArrayList<>();
+        for (int i = 0; i < 3; i++) connections.add(pool.getConnection().getConnection());
+        for (java.sql.Connection c : connections) c.close();
 
-        // Get a connection and release it
-        java.sql.Connection conn1 = pool.getConnection().getConnection();
-        conn1.close();
+        PoolStatistics before = pool.getPoolStatistics();
+        assertEquals("Should have 3 recycled connections before timeout", 3, before.recycledConnections);
+        assertEquals("Should have 3 total connections before timeout", 3, before.totalConnections);
 
-        PoolStatistics stats = pool.getPoolStatistics();
-        assertEquals("Should have 1 recycled connection", 1, stats.recycledConnections);
-
-        // Wait for max age timeout to expire
+        // Wait past maxAge.
         Thread.sleep(1500);
 
-        // Trigger a health check by getting another connection
-        java.sql.Connection conn2 = pool.getConnection().getConnection();
-        conn2.close();
+        // Drive the health-check pass synchronously.
+        pool.forceHealthCheck();
 
-        // Wait a bit more and check again
-        Thread.sleep(100);
-
-        // The aged connection should have been removed by health monitoring
-        // Note: Health monitoring runs every 30 seconds, so we can't reliably test this in a unit test
-        // This test mainly verifies that the pool doesn't crash with short max age timeouts
+        PoolStatistics after = pool.getPoolStatistics();
+        // Aged connections must observably shrink the pool. Warm-up can reseed
+        // up to minConnections (1 for pool size 3), so we expect a strict
+        // decrease in at least one of recycled or total.
+        assertTrue("Max-age eviction should reduce recycled or total; "
+                       + "before(r=" + before.recycledConnections + ",t=" + before.totalConnections + ") "
+                       + "after(r=" + after.recycledConnections + ",t=" + after.totalConnections + ")",
+                   after.totalConnections < before.totalConnections
+                || after.recycledConnections < before.recycledConnections);
 
         pool.close();
     }
@@ -693,198 +700,176 @@ public class ConnectionPoolHealthTest {
         // Initialize connection pool
         db.setConnectionPoolSize(10);
         db.initConnectionPool();
-
-        System.out.println("Database connection pool initialized with size: 10");
-
-        // Create test table
-        try (javaxt.sql.Connection conn = db.getConnection()) {
-            conn.execute("DROP TABLE IF EXISTS threadpool_test");
-            conn.execute("CREATE TABLE threadpool_test (id INT PRIMARY KEY, thread_name VARCHAR(100), timestamp BIGINT)");
-        }
-
-        // Track results
-        final AtomicInteger successCount = new AtomicInteger(0);
-        final AtomicInteger errorCount = new AtomicInteger(0);
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        // Create a custom ThreadPool similar to FileIndex usage
-        int numThreads = 10;
-        int poolSize = 100;
-
-        javaxt.utils.ThreadPool threadPool = new javaxt.utils.ThreadPool(numThreads, poolSize) {
-            public void process(Object obj) {
-                Integer taskId = (Integer) obj;
-
-                try {
-                    // Get connection from pool (like FileIndex does)
-                    try (javaxt.sql.Connection conn = db.getConnection()) {
-                        // Simulate database work
-                        String threadName = Thread.currentThread().getName();
-                        long timestamp = System.currentTimeMillis();
-
-                        conn.execute("INSERT INTO threadpool_test VALUES (" +
-                                   taskId + ", '" + threadName + "', " + timestamp + ")");
-
-                        // Simulate some work
-                        Thread.sleep(10);
-
-                        // Verify the insert worked
-                        Record record = conn.getRecord("SELECT COUNT(*) FROM threadpool_test WHERE id = " + taskId);
-                        if (record != null && record.get(0).toInteger() == 1) {
-                            successCount.incrementAndGet();
-                        } else {
-                            errorCount.incrementAndGet();
-                        }
-                    }
-                    // Connection.close() called automatically here
-
-                } catch (Exception e) {
-                    errorCount.incrementAndGet();
-                    System.err.println("Error in thread " + Thread.currentThread().getName() + ": " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-
-            public void exit() {
-                latch.countDown();
-            }
-        }.start();
-
-        // Add tasks to the thread pool
-        System.out.println("Adding 100 tasks to ThreadPool with " + numThreads + " worker threads");
-        for (int i = 0; i < 100; i++) {
-            threadPool.add(i);
-        }
-
-        // Signal completion and wait for all tasks to finish
-        threadPool.done();
-        threadPool.join();
-
-        // Wait for exit to be called
-        assertTrue("ThreadPool should complete within 30 seconds",
-                  latch.await(30, TimeUnit.SECONDS));
-
-        System.out.println("All tasks completed:");
-        System.out.println("  Success: " + successCount.get());
-        System.out.println("  Errors: " + errorCount.get());
-
-        // Verify results
-        assertEquals("Should have no errors", 0, errorCount.get());
-        assertEquals("Should have 100 successful operations", 100, successCount.get());
-
-        // Check pool statistics
         ConnectionPool pool = db.getConnectionPool();
-        PoolStatistics stats = pool.getPoolStatistics();
 
-        System.out.println("\nFinal pool statistics:");
-        System.out.println("  Active connections: " + stats.activeConnections);
-        System.out.println("  Recycled connections: " + stats.recycledConnections);
-        System.out.println("  Total connections: " + stats.totalConnections);
+        try {
+            System.out.println("Database connection pool initialized with size: 10");
 
-        // All connections should be returned to pool
-        assertEquals("All connections should be returned to pool", 0, stats.activeConnections);
-        assertTrue("Should have recycled connections", stats.recycledConnections > 0);
+            // Create test table
+            try (javaxt.sql.Connection conn = db.getConnection()) {
+                conn.execute("DROP TABLE IF EXISTS threadpool_test");
+                conn.execute("CREATE TABLE threadpool_test (id INT PRIMARY KEY, thread_name VARCHAR(100), timestamp BIGINT)");
+            }
 
-        // Verify data integrity
-        try (javaxt.sql.Connection conn = db.getConnection()) {
-            Record countRecord = conn.getRecord("SELECT COUNT(*) FROM threadpool_test");
-            int count = countRecord.get(0).toInteger();
-            assertEquals("Should have 100 records in database", 100, count);
+            // Track results
+            final AtomicInteger successCount = new AtomicInteger(0);
+            final AtomicInteger errorCount = new AtomicInteger(0);
+            final CountDownLatch latch = new CountDownLatch(1);
 
-            // Cleanup
-            conn.execute("DROP TABLE IF EXISTS threadpool_test");
+            // Create a custom ThreadPool similar to FileIndex usage
+            int numThreads = 10;
+            int poolSize = 100;
+
+            javaxt.utils.ThreadPool threadPool = new javaxt.utils.ThreadPool(numThreads, poolSize) {
+                public void process(Object obj) {
+                    Integer taskId = (Integer) obj;
+
+                    try {
+                        // Get connection from pool (like FileIndex does)
+                        try (javaxt.sql.Connection conn = db.getConnection()) {
+                            // Simulate database work
+                            String threadName = Thread.currentThread().getName();
+                            long timestamp = System.currentTimeMillis();
+
+                            conn.execute("INSERT INTO threadpool_test VALUES (" +
+                                       taskId + ", '" + threadName + "', " + timestamp + ")");
+
+                            // Simulate some work
+                            Thread.sleep(10);
+
+                            // Verify the insert worked
+                            Record record = conn.getRecord("SELECT COUNT(*) FROM threadpool_test WHERE id = " + taskId);
+                            if (record != null && record.get(0).toInteger() == 1) {
+                                successCount.incrementAndGet();
+                            } else {
+                                errorCount.incrementAndGet();
+                            }
+                        }
+                        // Connection.close() called automatically here
+
+                    } catch (Exception e) {
+                        errorCount.incrementAndGet();
+                        System.err.println("Error in thread " + Thread.currentThread().getName() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+
+                public void exit() {
+                    latch.countDown();
+                }
+            }.start();
+
+            // Add tasks to the thread pool
+            System.out.println("Adding 100 tasks to ThreadPool with " + numThreads + " worker threads");
+            for (int i = 0; i < 100; i++) {
+                threadPool.add(i);
+            }
+
+            // Signal completion and wait for all tasks to finish
+            threadPool.done();
+            threadPool.join();
+
+            // Wait for exit to be called
+            assertTrue("ThreadPool should complete within 30 seconds",
+                      latch.await(30, TimeUnit.SECONDS));
+
+            System.out.println("All tasks completed:");
+            System.out.println("  Success: " + successCount.get());
+            System.out.println("  Errors: " + errorCount.get());
+
+            // Verify results
+            assertEquals("Should have no errors", 0, errorCount.get());
+            assertEquals("Should have 100 successful operations", 100, successCount.get());
+
+            // Check pool statistics
+            PoolStatistics stats = pool.getPoolStatistics();
+
+            System.out.println("\nFinal pool statistics:");
+            System.out.println("  Active connections: " + stats.activeConnections);
+            System.out.println("  Recycled connections: " + stats.recycledConnections);
+            System.out.println("  Total connections: " + stats.totalConnections);
+
+            // All connections should be returned to pool
+            assertEquals("All connections should be returned to pool", 0, stats.activeConnections);
+            assertTrue("Should have recycled connections", stats.recycledConnections > 0);
+
+            // Verify data integrity
+            try (javaxt.sql.Connection conn = db.getConnection()) {
+                Record countRecord = conn.getRecord("SELECT COUNT(*) FROM threadpool_test");
+                int count = countRecord.get(0).toInteger();
+                assertEquals("Should have 100 records in database", 100, count);
+
+                // Cleanup
+                conn.execute("DROP TABLE IF EXISTS threadpool_test");
+            }
+
+            System.out.println("Real-world ThreadPool pattern test passed!");
+        } finally {
+            pool.close();
         }
-
-        System.out.println("Real-world ThreadPool pattern test passed!");
     }
 
-    // Helper methods to extract connection details from dataSource
+    // Helpers that build the javaxt.sql.Database configuration for the current
+    // parameterized DatabaseType. Dispatch on dbConfig.getType() rather than on
+    // the dataSource class so we can distinguish H2 in-memory from H2 file mode
+    // (both use org.h2.jdbcx.JdbcDataSource).
+
     private javaxt.sql.Driver getDriverFromDataSource() {
-        String className = dataSource.getClass().getName();
-        if (className.contains("PGConnectionPoolDataSource")) {
-            return javaxt.sql.Driver.PostgreSQL;
-        } else if (className.contains("MysqlConnectionPoolDataSource")) {
-            return javaxt.sql.Driver.MySQL;
-        } else if (className.contains("JdbcDataSource")) {
-            return javaxt.sql.Driver.H2;
+        switch (dbConfig.getType()) {
+            case POSTGRESQL: return javaxt.sql.Driver.PostgreSQL;
+            case MYSQL:      return javaxt.sql.Driver.MySQL;
+            case H2:
+            case H2_FILE:    return javaxt.sql.Driver.H2;
+            default:
+                throw new IllegalStateException("Unsupported database type: " + dbConfig.getType());
         }
-        throw new IllegalStateException("Unknown datasource type: " + className);
     }
 
     private String getHostFromDataSource() {
-        try {
-            if (dataSource instanceof org.postgresql.ds.PGConnectionPoolDataSource) {
-                org.postgresql.ds.PGConnectionPoolDataSource pgDS =
-                    (org.postgresql.ds.PGConnectionPoolDataSource) dataSource;
-                return pgDS.getServerNames()[0];
-            } else if (dataSource instanceof com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) {
-                com.mysql.cj.jdbc.MysqlConnectionPoolDataSource mysqlDS =
-                    (com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) dataSource;
-                return mysqlDS.getServerName();
-            } else if (dataSource instanceof org.h2.jdbcx.JdbcDataSource) {
-                // H2 file-based
-                String tempDir = System.getProperty("java.io.tmpdir");
-                if (!tempDir.endsWith(java.io.File.separator)) {
-                    tempDir += java.io.File.separator;
-                }
-                return tempDir + "javaxt_test_h2";
+        switch (dbConfig.getType()) {
+            case POSTGRESQL:
+            case MYSQL:
+                return dbConfig.getHost();
+            case H2:
+                // Database treats host="memory" (or empty) as jdbc:h2:mem:
+                return "memory";
+            case H2_FILE: {
+                // For file mode we need a path. The db.name property already
+                // carries a "file:<path>;<params>" prefix; strip the "file:"
+                // and keep the path + params (notably DB_CLOSE_DELAY=-1, which
+                // must be on every URL or H2 will tear down the DB the moment
+                // the last connection closes between checkouts). Database
+                // prepends "jdbc:h2:file:" and appends "/" + name, which means
+                // we set name="" to avoid an extra "/<name>" suffix.
+                String n = dbConfig.getDatabaseName();
+                return n.startsWith("file:") ? n.substring(5) : n;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            default:
+                return "localhost";
         }
-        return "localhost";
     }
 
     private String getDatabaseNameFromDataSource() {
-        try {
-            if (dataSource instanceof org.postgresql.ds.PGConnectionPoolDataSource) {
-                org.postgresql.ds.PGConnectionPoolDataSource pgDS =
-                    (org.postgresql.ds.PGConnectionPoolDataSource) dataSource;
-                return pgDS.getDatabaseName();
-            } else if (dataSource instanceof com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) {
-                com.mysql.cj.jdbc.MysqlConnectionPoolDataSource mysqlDS =
-                    (com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) dataSource;
-                return mysqlDS.getDatabaseName();
-            } else if (dataSource instanceof org.h2.jdbcx.JdbcDataSource) {
+        switch (dbConfig.getType()) {
+            case POSTGRESQL:
+            case MYSQL:
+                return dbConfig.getDatabaseName();
+            case H2:
                 return "test";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            case H2_FILE:
+                // The file path is carried in setHost(); leave name empty so
+                // Database doesn't add a spurious "/<name>" segment to the URL.
+                return "";
+            default:
+                return "test";
         }
-        return "test";
     }
 
     private String getUserFromDataSource() {
-        try {
-            if (dataSource instanceof org.postgresql.ds.PGConnectionPoolDataSource) {
-                org.postgresql.ds.PGConnectionPoolDataSource pgDS =
-                    (org.postgresql.ds.PGConnectionPoolDataSource) dataSource;
-                return pgDS.getUser();
-            } else if (dataSource instanceof com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) {
-                com.mysql.cj.jdbc.MysqlConnectionPoolDataSource mysqlDS =
-                    (com.mysql.cj.jdbc.MysqlConnectionPoolDataSource) dataSource;
-                return mysqlDS.getUser();
-            } else if (dataSource instanceof org.h2.jdbcx.JdbcDataSource) {
-                org.h2.jdbcx.JdbcDataSource h2DS = (org.h2.jdbcx.JdbcDataSource) dataSource;
-                return h2DS.getUser();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "sa";
+        return dbConfig.getUser();
     }
 
     private String getPasswordFromDataSource() {
-        try {
-            if (dataSource instanceof org.h2.jdbcx.JdbcDataSource) {
-                org.h2.jdbcx.JdbcDataSource h2DS = (org.h2.jdbcx.JdbcDataSource) dataSource;
-                return h2DS.getPassword();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // For security, we can't easily retrieve passwords from PostgreSQL/MySQL datasources
-        // Use the same password from ConnectionPoolTestConfig
         return dbConfig.getPassword();
     }
 }

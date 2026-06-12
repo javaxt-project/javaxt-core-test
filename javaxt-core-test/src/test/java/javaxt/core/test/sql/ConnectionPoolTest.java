@@ -15,7 +15,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 
 /**
  * Comprehensive test suite for ConnectionPool class.
@@ -39,13 +38,13 @@ public class ConnectionPoolTest {
      */
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-        // Skip all tests if no database is configured
-        assumeTrue(
-            "Skipping ConnectionPool tests: " + ConnectionPoolTestConfig.getGlobalError(),
-            ConnectionPoolTestConfig.hasValidConfiguration()
-        );
-
+        // Returning an empty list causes Parameterized to skip the class cleanly.
+        // assumeTrue() thrown from @Parameters surfaces as a class-init error,
+        // not a skip, so don't use it here.
         List<Object[]> params = new ArrayList<>();
+        if (!ConnectionPoolTestConfig.hasValidConfiguration()) {
+            return params;
+        }
         for (ConnectionPoolTestConfig.DatabaseConfig config : ConnectionPoolTestConfig.getValidConfigurations()) {
             params.add(new Object[]{config.getType().getDisplayName(), config});
         }
@@ -567,7 +566,8 @@ public class ConnectionPoolTest {
 
     @Test
     public void testConnectionLeakDetection() throws Exception {
-        connectionPool = new ConnectionPool(dataSource, 3, 10);
+        // Use a short timeout so the test isn't slow.
+        connectionPool = new ConnectionPool(dataSource, 3, 1);
 
         // Acquire all connections but don't close them
         List<java.sql.Connection> connections = new ArrayList<>();
@@ -586,7 +586,8 @@ public class ConnectionPoolTest {
             fail("Should have timed out");
         } catch (javaxt.sql.ConnectionPool.TimeoutException e) {
             long elapsed = System.currentTimeMillis() - startTime;
-            assertTrue("Should timeout within reasonable time", elapsed >= 9000 && elapsed <= 11000);
+            assertTrue("Should timeout within reasonable time; got " + elapsed + "ms",
+                       elapsed >= 800 && elapsed <= 2500);
         }
 
         // Clean up

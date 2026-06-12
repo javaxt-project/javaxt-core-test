@@ -14,7 +14,6 @@ import javaxt.sql.ConnectionPool;
 import javaxt.sql.ConnectionPool.PoolStatistics;
 import org.junit.*;
 import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -40,13 +39,13 @@ public class ConnectionPoolPerformanceTest {
      */
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-        // Skip all tests if no database is configured
-        assumeTrue(
-            "Skipping ConnectionPool performance tests: " + ConnectionPoolTestConfig.getGlobalError(),
-            ConnectionPoolTestConfig.hasValidConfiguration()
-        );
-
+        // Returning an empty list causes Parameterized to skip the class cleanly.
+        // assumeTrue() thrown from @Parameters surfaces as a class-init error,
+        // not a skip, so don't use it here.
         List<Object[]> params = new ArrayList<>();
+        if (!ConnectionPoolTestConfig.hasValidConfiguration()) {
+            return params;
+        }
         for (ConnectionPoolTestConfig.DatabaseConfig config : ConnectionPoolTestConfig.getValidConfigurations()) {
             params.add(new Object[]{config.getType().getDisplayName(), config});
         }
@@ -245,7 +244,8 @@ public class ConnectionPoolPerformanceTest {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    errorCount.incrementAndGet();
+                    exceptions.add(e);
                 } finally {
                     finishLatch.countDown();
                 }
@@ -299,7 +299,8 @@ public class ConnectionPoolPerformanceTest {
                             hikariOps.incrementAndGet();
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        errorCount.incrementAndGet();
+                        exceptions.add(e);
                     } finally {
                         hikariFinish.countDown();
                     }
@@ -768,7 +769,8 @@ public class ConnectionPoolPerformanceTest {
 
     @Test
     public void testConnectionLeakDetection() throws Exception {
-        ConnectionPool pool = new ConnectionPool(dataSource, 10, 10);
+        // Use a short timeout so the test isn't slow.
+        ConnectionPool pool = new ConnectionPool(dataSource, 10, 1);
 
         // Acquire all connections and don't release them
         List<java.sql.Connection> connections = new ArrayList<>();
@@ -788,7 +790,8 @@ public class ConnectionPoolPerformanceTest {
             fail("Should have timed out");
         } catch (javaxt.sql.ConnectionPool.TimeoutException e) {
             long elapsed = System.currentTimeMillis() - startTime;
-            assertTrue("Should timeout within reasonable time", elapsed >= 9000 && elapsed <= 11000);
+            assertTrue("Should timeout within reasonable time; got " + elapsed + "ms",
+                       elapsed >= 800 && elapsed <= 2500);
         }
 
         // Release all connections
